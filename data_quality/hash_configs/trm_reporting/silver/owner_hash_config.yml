@@ -1,0 +1,8 @@
+# /data_quality/hash_configs/trm_reporting/silver/owner_hash_config.yml — CHAIN OF TITLE
+natural_key_columns:
+  - ser_num
+  - owner_num                        # Sequential owner number (1 = current)
+
+use_all_columns_for_data_hash: true
+# Rationale: Name, address, country, email — any change affects certificate & Madrid
+# Full row hash required for legal accuracy

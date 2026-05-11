@@ -1,0 +1,55 @@
+# /data_quality/allowed_values/law_offices.yml
+# USPTO LAW OFFICE REFERENCE
+# Code Range	Description
+# 101-120	Standard examining law offices
+# 361-369	Additional examining law offices
+# SUP	Supervisory/Support
+# L1A-L8B	Legacy/Special law offices
+# L89	Special processing
+- "101"
+- "102"
+- "103"
+- "104"
+- "105"
+- "106"
+- "107"
+- "108"
+- "109"
+- "110"
+- "111"
+- "112"
+- "113"
+- "114"
+- "115"
+- "116"
+- "117"
+- "118"
+- "119"
+- "120"
+- "361"
+- "362"
+- "363"
+- "364"
+- "365"
+- "366"
+- "367"
+- "368"
+- "369"
+- SUP
+- L1A
+- L1B
+- L2A
+- L2B
+- L3A
+- L3B
+- L4A
+- L4B
+- L5A
+- L5B
+- L6A
+- L6B
+- L7A
+- L7B
+- L8A
+- L8B
+- L89

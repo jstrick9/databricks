@@ -1,0 +1,7 @@
+# /data_quality/hash_configs/trm_tmngpdb/bronze/mailing_address_hash_config.yml — PHYSICAL DELIVERABILITY
+natural_key_columns:
+  - mailing_address_gid              # Global unique identifier
+
+use_all_columns_for_data_hash: true
+# Rationale: Any change to name, street, city, postal code, or country affects USPS delivery
+# Full row hash ensures perfect audit of mail success/failure

@@ -1,0 +1,36 @@
+checks:
+  - name: class_not_null
+    criticality: warn
+    check:
+      function: is_not_null
+      arguments:
+        col_name: class
+
+  - name: class_status_not_null
+    criticality: warn
+    check:
+      function: is_not_null
+      arguments:
+        col_name: class_status
+  
+  - name: goods_and_services_desc_not_null
+    criticality: warn
+    check:
+      function: is_not_null
+      arguments:
+        col_name: goods_and_services_desc
+
+  - name: valid_international_class
+    criticality: warn
+    check:
+      function: valid_international_class
+
+  - name: no_duplicate_classes_per_application
+    criticality: error
+    check:
+      function: no_duplicate_classes_per_application
+
+  - name: valid_gs_format
+    criticality: warn
+    check:
+      function: valid_gs_format

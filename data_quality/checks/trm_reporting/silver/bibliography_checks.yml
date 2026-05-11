@@ -1,0 +1,93 @@
+# /data_quality/checks/trm_reporting/silver/bibliography_checks.yml
+checks:
+  # NOT NULL checks (built-in is_not_null, one per column)
+  - criticality: warn
+    check:
+      function: is_not_null
+      arguments:
+        column: SER_NUM
+
+  - criticality: warn
+    check:
+      function: is_not_null
+      arguments:
+        column: FILING_BASIS_CUR
+
+  - criticality: warn
+    check:
+      function: is_not_null
+      arguments:
+        column: FILING_BASIS_FIL
+
+  - criticality: warn
+    check:
+      function: is_not_null
+      arguments:
+        column: FILING_METHOD_FILED
+
+  - criticality: warn
+    check:
+      function: is_not_null
+      arguments:
+        column: LAW_OFFICE
+
+  - criticality: warn
+    check:
+      function: is_not_null
+      arguments:
+        column: STATUS_DT
+
+  - criticality: warn
+    check:
+      function: is_not_null
+      arguments:
+        column: LAST_MODIFIED_DATE
+
+  # UNIQUENESS check (built-in is_unique)
+  - criticality: error
+    check:
+      function: is_unique
+      arguments:
+        columns: [SER_NUM]
+        nulls_distinct: true
+
+  # REGEX on SER_NUM (built-in regex_match — use inline regex, not regex_name)
+  - criticality: warn
+    check:
+      function: regex_match
+      arguments:
+        column: SER_NUM
+        regex: "^[0-9]{8}$"
+        negate: false
+
+  # 0/1 flags (custom python check values_in_0_or_1, one per column)
+  - criticality: warn
+    check:
+      function: values_in_0_or_1
+      arguments:
+        col_name: AM_FLG_66A_FIL
+
+  - criticality: warn
+    check:
+      function: values_in_0_or_1
+      arguments:
+        col_name: AM_FLG_44D_FIL
+
+  - criticality: warn
+    check:
+      function: values_in_0_or_1
+      arguments:
+        col_name: AM_FLG_44E_FIL
+
+  - criticality: warn
+    check:
+      function: values_in_0_or_1
+      arguments:
+        col_name: AM_FLG_TEASPL_FIL
+
+  # ALL CAPS check on MARK_NM_SHORT (your custom python check)
+  - criticality: warn
+    check:
+      function: all_caps
+      arguments:
+        col_name: MARK_NM_SHORT
