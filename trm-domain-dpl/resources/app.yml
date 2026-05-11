@@ -1,0 +1,11 @@
+resources:
+  apps:
+    quality-hub:
+      name: quality-hub-${bundle.target}
+      description: Quality Hub for ${bundle.target}
+      source_code_path: ../apps/quality-hub
+      permissions:
+        - level: ${var.app_editor}   # CAN_MANAGE
+          group_name: ${var.editorteam}
+        - level: ${var.app_reader}   # CAN_USE
+          group_name: ${var.app_reader_user}

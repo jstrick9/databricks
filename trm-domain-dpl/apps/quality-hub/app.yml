@@ -1,0 +1,19 @@
+command: ["streamlit", "run", "app.py"]
+
+env:
+  - name: DQ_PATH
+    value: "/data_quality"
+  - name: DOMAIN_CATALOG
+    value: "trm_domain_dev"
+  - name: DBX_ENV
+    value: "dev"
+  - name: PYTHONPATH
+    value: "/data_quality"
+  - name: DQ_CONFIGS_ROOT
+    value: "/Volumes/trm_domain_dev/audit_quality/dq_configs"
+  - name: DQ_CONFIGS_READONLY
+    value: "false"
+  - name: APP_ID
+    value: "quality_hub"
+  - name: DATABRICKS_WAREHOUSE_NAME
+    value: "Serverless Starter Warehouse"
