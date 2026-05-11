@@ -1,0 +1,45 @@
+# /data_quality/checks/trm_reporting/silver/owner_checks.yml
+checks:
+  - criticality: warn
+    check:
+      function: is_not_null
+      arguments:
+        column: ser_num
+
+  - criticality: warn
+    check:
+      function: is_not_null
+      arguments:
+        column: owner_num
+
+  - criticality: warn
+    check:
+      function: is_not_null
+      arguments:
+        column: name
+
+  - criticality: warn
+    check:
+      function: is_not_null
+      arguments:
+        column: ctry_cd
+
+  - criticality: warn
+    check:
+      function: valid_iso_country_code
+      arguments:
+        col_name: ctry_cd
+
+  - criticality: warn
+    check:
+      function: valid_email_format
+      arguments:
+        col_name: owner_email
+
+  - criticality: warn
+    check:
+      function: exactly_one_current_owner_per_case
+
+  - criticality: warn
+    check:
+      function: current_owner_name_matches_legacy

@@ -1,0 +1,59 @@
+# /data_quality/checks/trm_reporting/silver/prosecution_history_checks.yml
+checks:
+  - name: serial_number_not_null
+    criticality: warn
+    check:
+      function: is_not_null
+      arguments:
+        col_name: serial_number
+
+  - name: ph_action_number_not_null
+    criticality: warn
+    check:
+      function: is_not_null
+      arguments:
+        col_name: ph_action_number
+
+  - name: ph_action_code_not_null
+    criticality: warn
+    check:
+      function: is_not_null
+      arguments:
+        col_name: ph_action_code
+
+  - name: cm_sys_dt_not_null
+    criticality: warn
+    check:
+      function: is_not_null
+      arguments:
+        col_name: cm_sys_dt
+
+  - name: serial_number_format_8_digits
+    criticality: warn
+    check:
+      function: regex_match
+      arguments:
+        col_name: serial_number
+        regex: "^[0-9]{8}$"
+
+  - name: ph_action_code_in_allowed_set
+    criticality: warn
+    check:
+      function: valid_ph_action_code
+      arguments:
+        col_name: ph_action_code
+
+  - name: ph_action_sequence_is_valid
+    criticality: error
+    check:
+      function: ph_action_sequence_is_valid
+
+  - name: ph_dates_are_chronological
+    criticality: warn
+    check:
+      function: ph_dates_are_chronological
+
+  - name: notification_within_mailing_standard
+    criticality: warn
+    check:
+      function: notification_within_mailing_standard

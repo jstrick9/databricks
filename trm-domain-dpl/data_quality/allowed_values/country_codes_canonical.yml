@@ -1,0 +1,87 @@
+# /data_quality/allowed_values/country_codes_canonical.yml
+USA: "US"
+US: "US"
+U.S.A.: "US"
+U.S.: "US"
+"UNITED STATES": "US"
+"UNITED STATES OF AMERICA": "US"
+
+CANADA: "CA"
+CAN: "CA"
+
+GBR: "GB"
+"UNITED KINGDOM": "GB"
+UK: "GB"
+
+DEU: "DE"
+GERMANY: "DE"
+
+JPN: "JP"
+JAPAN: "JP"
+
+KOR: "KR"
+"KOREA, REPUBLIC OF": "KR"
+KOREA: "KR"
+
+CHN: "CN"
+CHINA: "CN"
+
+FRA: "FR"
+FRANCE: "FR"
+
+ITA: "IT"
+ITALY: "IT"
+
+AUS: "AU"
+AUSTRALIA: "AU"
+
+BRA: "BR"
+BRAZIL: "BR"
+
+IND: "IN"
+INDIA: "IN"
+
+MEX: "MX"
+MEXICO: "MX"
+
+ESP: "ES"
+SPAIN: "ES"
+
+RUS: "RU"
+RUSSIA: "RU"
+
+CHE: "CH"
+SWITZERLAND: "CH"
+
+NLD: "NL"
+NETHERLANDS: "NL"
+
+SWE: "SE"
+SWEDEN: "SE"
+
+NOR: "NO"           # KEY FIX: quote NO
+NORWAY: "NO"        # KEY FIX: quote NO
+
+DNK: "DK"
+DENMARK: "DK"
+
+FIN: "FI"
+FINLAND: "FI"
+
+POL: "PL"
+POLAND: "PL"
+
+TUR: "TR"
+TURKEY: "TR"
+
+ISR: "IL"
+ISRAEL: "IL"
+
+SAU: "SA"
+"SAUDI ARABIA": "SA"
+
+ARE: "AE"
+"UNITED ARAB EMIRATES": "AE"
+
+ZAF: "ZA"
+"SOUTH AFRICA": "ZA"

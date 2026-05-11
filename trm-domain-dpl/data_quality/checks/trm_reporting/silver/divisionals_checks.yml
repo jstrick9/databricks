@@ -1,0 +1,43 @@
+# /data_quality/checks/trm_reporting/silver/divisionals_checks.yml
+checks:
+  - criticality: warn
+    check:
+      function: is_not_null
+      arguments:
+        column: ser_num
+
+  - criticality: warn
+    check:
+      function: is_not_null
+      arguments:
+        column: ref_ser_num
+
+  - criticality: warn
+    check:
+      function: is_not_null
+      arguments:
+        column: dv_type
+
+  - criticality: warn
+    check:
+      function: is_not_null
+      arguments:
+        column: filing_dt
+
+  - criticality: warn
+    check:
+      function: is_not_null
+      arguments:
+        column: ib_notification_dt
+
+  - criticality: error
+    check:
+      function: valid_madrid_divisional_filing_window
+
+  - criticality: warn
+    check:
+      function: divisional_request_to_us_filing_timely
+
+  - criticality: error
+    check:
+      function: parent_ir_is_valid_madrid_number

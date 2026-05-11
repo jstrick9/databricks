@@ -1,0 +1,8 @@
+# /data_quality/allowed_values/address_types.yml
+# Canonical address types for mailing_address.address_type_ct
+
+- CORRESPONDENCE
+- OWNER
+- DOMESTIC_REP
+- ATTORNEY
+- OTHER

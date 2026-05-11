@@ -1,0 +1,7 @@
+# /data_quality/hash_configs/trm_reporting/silver/fpep_fact_hash_config.yml — EXAMINER PRODUCTIVITY TRUTH
+natural_key_columns:
+  - FP_ID                            # Official FPEP fact ID — globally unique
+
+use_all_columns_for_data_hash: true
+# Rationale: CATEGORY, COMPLETED_DT, ACTION_COUNT — all affect examiner credit
+# Must detect any change for audit integrity

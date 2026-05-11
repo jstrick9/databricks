@@ -1,0 +1,8 @@
+# /data_quality/hash_configs/trm_reporting/silver/class_hash_config.yml — GOODS & SERVICES TRUTH
+natural_key_columns:
+  - ser_num
+  - class                            # International Nice class (001-045)
+
+use_all_columns_for_data_hash: true
+# Rationale: G&S description, status, and US class can change independently
+# Full row hash ensures any modification creates new version
