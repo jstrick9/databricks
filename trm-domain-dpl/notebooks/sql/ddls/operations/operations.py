@@ -1,14 +1,33 @@
 # Databricks notebook source
+dbutils.widgets.text("dbx_env","dev")
+dbx_env = dbutils.widgets.get("dbx_env").rstrip()
+config_file_name = "trmdomain-conf.yaml" 
+config_file = "../../../config/"+dbutils.widgets.get("dbx_env")+"/"+config_file_name
+print(f'{config_file=}')
+
+# COMMAND ----------
+
+# MAGIC %run  ../../../python/shared/ntb_common_func_and_params $config_file=config_file
+
+# COMMAND ----------
+
+common_configs = read_yaml(config_file)
+domain_catalog = common_configs['schema']['trgt_catalog']
+spark.conf.set('config.domain_catalog', domain_catalog)
+print(f'{domain_catalog=}')
+
+# COMMAND ----------
+
 # MAGIC %sql
 # MAGIC -- Create the operations schema in trm_domain_dev catalog
-# MAGIC CREATE SCHEMA IF NOT EXISTS trm_domain_dev.operations
+# MAGIC CREATE SCHEMA IF NOT EXISTS ${config.catalog}.operations
 # MAGIC COMMENT 'Centralized Operations for Trademark assets - data productions, data sources, business entities/domains, etc.';
 
 # COMMAND ----------
 
 # MAGIC %sql
 # MAGIC -- Registry supports multiple apps
-# MAGIC CREATE TABLE IF NOT EXISTS trm_domain_dev.operations.app_permission_registry (
+# MAGIC CREATE TABLE IF NOT EXISTS ${config.catalog}.operations.app_permission_registry (
 # MAGIC     app_id          STRING NOT NULL COMMENT 'The unique ID of the app (e.g., dq_hub, tdet)',
 # MAGIC     group_name      STRING NOT NULL COMMENT 'The Databricks Group Name',
 # MAGIC     capability      STRING NOT NULL COMMENT 'The specific permission within that app',
@@ -20,7 +39,7 @@
 # MAGIC ) USING DELTA;
 # MAGIC
 # MAGIC -- Example: Configuring two different apps in one table
-# MAGIC INSERT INTO trm_domain_dev.operations.app_permission_registry 
+# MAGIC INSERT INTO ${config.catalog}.operations.app_permission_registry 
 # MAGIC (app_id, group_name, capability, data_scope, description, is_active, updated_at, updated_by)
 # MAGIC VALUES
 # MAGIC -- ============================================================

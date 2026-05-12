@@ -1,0 +1,7 @@
+schema:
+    trgt_catalog: 'trm_domain_dev'
+cdc:
+    src_database: ''
+    cdc_bucket: 'databricks-lab-tmdc'   
+data_quality:
+    receiver_email: ''
