@@ -1,0 +1,17 @@
+schema:
+    tmngfpepp_catalog: 'trm_tmngfpepp_dev'
+    trgt_catalog: 'trm_tmngfpepp_dev'
+    data_quality_catalog: 'data_quality_dev' 
+    src_db_name: 'TMNGFPEPPVT'
+cdc:
+    src_csv_files: 's3a://databricks-lab-tmdc/eds/DMS/TMNGFPEPPVT'
+    src_database: 'TMNGFPEPPVT'
+    cdc_bucket: 'databricks-lab-tmdc'
+    cdc_folder: '/eds/DMS/cdc/trm/tmngfpepp'
+    transformed_cdc_folder: '/eds/DMS/cdc/trm/tmngfpepp/transformed_cdc'
+    finished_cdc_folder: '/eds/DMS/cdc/trm/tmngfpepp/finished_cdc'
+secrets:
+    trm_scope: 'oracle_trm_server'
+data_quality:
+    receiver_email: 'Tirupati.Chellarapu@USPTO.GOV'
+    brz_allowed_variance: '10.0'

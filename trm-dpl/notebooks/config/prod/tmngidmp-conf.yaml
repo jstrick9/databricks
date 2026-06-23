@@ -1,0 +1,18 @@
+schema:
+  trgt_catalog: 'trm_tmngidmp'
+  data_quality_catalog: 'data_quality' 
+  src_db_name: 'tmngidmp'
+cdc:
+  src_csv_files: 's3a://databricks-prod-tmdc/eds/DMS/TMNGIDMP'
+  src_database: 'tmngidmp'
+  cdc_bucket: 'databricks-prod-tmdc'
+  cdc_folder: 'eds/DMS/cdc/trm/tmngidmp'
+  transformed_cdc_folder: 'eds/DMS/cdc/trm/tmngidmp/transformed_cdc'
+  finished_cdc_folder: 'eds/DMS/cdc/trm/tmngidmp/finished_cdc'
+secrets:
+  mysql_scope: 'mysql_bdr_server'
+  trm_tmngidmp_scope: 'oracle_trmprd_server'
+  trm_scope: 'oracle_trm_server' 
+data_quality:
+    receiver_email: 'ODBDDataLakeTeam@uspto.gov'
+    brz_allowed_variance: '2.0'  

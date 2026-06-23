@@ -1,0 +1,16 @@
+schema:
+  trgt_catalog: 'trm_tmrefdata'
+  data_quality_catalog: 'data_quality' 
+  src_db_name: 'TMREFDATA'
+cdc:
+  src_csv_files: 's3a://databricks-prod-tmdc/eds/DMS/TMREFDATA'
+  src_database: 'TMREFDATA'
+  cdc_bucket: 'databricks-prod-tmdc'
+  cdc_folder: '/eds/DMS/cdc/trm/trm_tmrefdata'
+  transformed_cdc_folder: '/eds/DMS/cdc/trm/tmrefdata/transformed'
+  finished_cdc_folder: '/eds/DMS/cdc/trm/tmrefdata/finished'
+secrets:
+  trm_scope: 'oracle_trm_server'    
+data_quality:
+  receiver_email: ''
+  brz_allowed_variance: '2.0'    

@@ -1,0 +1,22 @@
+schema:
+    trgt_catalog: 'trm_tmbuscalendar_dev'
+    data_quality_catalog: 'data_quality_dev' 
+    src_db_name: 'tmbuscalendar' 
+cdc:
+    src_csv_files: 's3a://databricks-lab-tmdc/eds/DMS/TMBUSCALENDAR'
+    src_database: 'tmbuscalendar'
+    cdc_bucket: 'databricks-lab-tmdc'
+    cdc_folder: 'eds/DMS/cdc/trm/tmbuscalendar'
+    transformed_cdc_folder: 'eds/DMS/cdc/trm/tmbuscalendar/transformed_cdc'
+    finished_cdc_folder: 'eds/DMS/cdc/trm/tmbuscalendar/finished_cdc'
+secrets:
+    trm_scope: 'oracle_trm_server'    
+data_quality:
+    receiver_email: 'pawanpreet.sangari@uspto.gov'
+    brz_allowed_variance: '10.0'     
+DMS:
+    replication_instance: 'dbx-dev-orc-mig-s3'
+    source_endpoint: 'pvt-tmng-db'
+    target_endpoint: 'dms-tmbuscalendar'
+    delta_load_task_name: 'trm-tmbuscalendar-delta-load'
+    full_load_task_name: 'trm-tmbuscalendar-full-load'

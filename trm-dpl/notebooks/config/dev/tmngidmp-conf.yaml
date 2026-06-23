@@ -1,0 +1,19 @@
+schema:
+  #tmngidmp_catalog: 'trm_tmngidmpvt_dev'
+  trgt_catalog: 'trm_tmngidmpvt_dev'
+  data_quality_catalog: 'data_quality_dev' 
+  src_db_name: 'tmngidmpvt'
+cdc:
+  src_csv_files: 's3a://databricks-lab-tmdc/eds/DMS/TMNGIDMPVT'
+  src_database: 'tmngidmpvt'
+  cdc_bucket: 'databricks-lab-tmdc'
+  cdc_folder: 'eds/DMS/cdc/trm/tmngidmpvt'
+  transformed_cdc_folder: 'eds/DMS/cdc/trm/tmngidmpvt/transformed_cdc'
+  finished_cdc_folder: 'eds/DMS/cdc/trm/tmngidmpvt/finished_cdc'
+secrets:
+  mysql_scope: 'mysql_bdr_server'
+  trm_tmngidmp_scope: 'oracle_trmpvt_server'
+  trm_scope: 'oracle_trm_server' 
+data_quality:
+  receiver_email: 'robert.morris@uspto.gov'
+  brz_allowed_variance: '.10' 

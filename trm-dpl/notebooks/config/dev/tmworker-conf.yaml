@@ -1,0 +1,23 @@
+schema:
+    trgt_catalog: 'trm_tmworker_dev'
+    data_quality_catalog: 'data_quality_dev' 
+    src_db_name: 'TMWORKER'
+    foreign_oracle_catalog: "foreign_trm_dev"
+cdc:
+    src_csv_files: 's3a://databricks-lab-tmdc/eds/DMS/TMWORKER'
+    src_database: 'TMWORKER'
+    cdc_bucket: 'databricks-lab-tmdc'
+    cdc_folder: '/eds/DMS/cdc/trm/trm_tmworker'
+    transformed_cdc_folder: '/eds/DMS/cdc/trm/trm_tmworker/transformed'
+    finished_cdc_folder: '/eds/DMS/cdc/trm/trm_tmworker/finished'
+secrets:
+    trm_scope: 'oracle_trm_server' 
+data_quality:
+    receiver_email: 'ravi.koppula1@uspto.gov'
+    brz_allowed_variance: '10.0'      
+DMS:
+    replication_instance: 'dbx-dev-orc-mig-s3'
+    source_endpoint: 'pvt-tmng-db'
+    target_endpoint: 'dms-tmworker-trg-s3'
+    delta_load_task_name: 'trm-tmworker-delta-load'
+    full_load_task_name: 'trm-tmworker-full-load'       
