@@ -1,0 +1,230 @@
+resources:
+  jobs:
+    wf_tmngpdb_silver_bdss_load:
+      name: wf_tmngpdb_silver_bdss_load
+      email_notifications:
+        on_failure:
+          - ODBDDataLakeTeam@uspto.gov
+          - vzivkovic@uspto.gov
+      notification_settings:
+        no_alert_for_canceled_runs: true
+      timeout_seconds: 9000
+      schedule:
+        quartz_cron_expression: 25 0 23 * * ?
+        timezone_id: America/New_York
+        pause_status: UNPAUSED
+      tasks:
+        - task_key: job_tmngpdb_silver_bdss_class_load
+          notebook_task:
+            notebook_path: notebooks/python/silver/ntb_silver_bdss_class_load
+            base_parameters:
+              SRC_SYS_NAME: TMNGPDB
+              dbx_env: ${var.environment}
+              config_file: ../config/${var.environment}/tmngpdb-conf.yaml
+            source: GIT
+          job_cluster_key: job_wf_lom_data_load_cluster
+          max_retries: 2
+          min_retry_interval_millis: 120000
+        - task_key: job_tmngpdb_silver_tmapplser_inc_call
+          notebook_task:
+            notebook_path: notebooks/python/silver/ntb_silver_tmapplser_inc_call
+            base_parameters:
+              dbx_env: ${var.environment}
+              start_date: ""
+              end_date: ""
+              SRC_SYS_NAME: TMNGPDB
+              config_file: ../config/${var.environment}/tmngpdb-conf.yaml
+            source: GIT
+          job_cluster_key: job_wf_lom_data_load_cluster
+          max_retries: 2
+          min_retry_interval_millis: 120000
+        - task_key: job_tmngpdb_silver_bdss_designs_stgload
+          depends_on:
+            - task_key: job_tmngpdb_silver_tmapplser_inc_call
+          notebook_task:
+            notebook_path: notebooks/python/silver/ntb_silver_bdss_designs_stgload
+            base_parameters:
+              SRC_SYS_NAME: TMNGPDB
+              dbx_env: ${var.environment}
+              config_file: ../config/${var.environment}/tmngpdb-conf.yaml
+              rundate: ""
+            source: GIT
+          job_cluster_key: job_wf_lom_data_load_cluster
+          max_retries: 2
+          min_retry_interval_millis: 120000
+        - task_key: job_tmngpdb_silver_bdss_madrid_and_history_data_stgload
+          depends_on:
+            - task_key: job_tmngpdb_silver_tmapplser_inc_call
+          notebook_task:
+            notebook_path: notebooks/python/silver/ntb_silver_bdss_madrid_and_history_data_stgload
+            base_parameters:
+              SRC_SYS_NAME: TMNGPDB
+              dbx_env: ${var.environment}
+              config_file: ../config/${var.environment}/tmngpdb-conf.yaml
+              rundate: ""
+            source: GIT
+          job_cluster_key: job_wf_lom_data_load_cluster
+          max_retries: 2
+          min_retry_interval_millis: 120000
+        - task_key: job_tmngpdb_silver_bdss_name_change_stgload
+          depends_on:
+            - task_key: job_tmngpdb_silver_tmapplser_inc_call
+          notebook_task:
+            notebook_path: notebooks/python/silver/ntb_silver_bdss_name_change_stgload
+            base_parameters:
+              SRC_SYS_NAME: TMNGPDB
+              dbx_env: ${var.environment}
+              config_file: ../config/${var.environment}/tmngpdb-conf.yaml
+              rundate: ""
+            source: GIT
+          job_cluster_key: job_wf_lom_data_load_cluster
+          max_retries: 2
+          min_retry_interval_millis: 120000
+        - task_key: job_tmngpdb_silver_bdss_owners_data_stgload
+          depends_on:
+            - task_key: job_tmngpdb_silver_tmapplser_inc_call
+          notebook_task:
+            notebook_path: notebooks/python/silver/ntb_silver_bdss_owners_data_stgload
+            base_parameters:
+              SRC_SYS_NAME: TMNGPDB
+              dbx_env: ${var.environment}
+              config_file: ../config/${var.environment}/tmngpdb-conf.yaml
+              rundate: ""
+            source: GIT
+          job_cluster_key: job_wf_lom_data_load_cluster
+          max_retries: 2
+          min_retry_interval_millis: 120000
+        - task_key: job_tmngpdb_silver_bdss_prior_regs_stgload
+          depends_on:
+            - task_key: job_tmngpdb_silver_tmapplser_inc_call
+          notebook_task:
+            notebook_path: notebooks/python/silver/ntb_silver_bdss_prior_regs_stgload
+            base_parameters:
+              SRC_SYS_NAME: TMNGPDB
+              dbx_env: ${var.environment}
+              config_file: ../config/${var.environment}/tmngpdb-conf.yaml
+              rundate: ""
+            source: GIT
+          job_cluster_key: job_wf_lom_data_load_cluster
+          max_retries: 2
+          min_retry_interval_millis: 120000
+        - task_key: job_tmngpdb_silver_bdss_vt_text_data_stgload
+          depends_on:
+            - task_key: job_tmngpdb_silver_tmapplser_inc_call
+          notebook_task:
+            notebook_path: notebooks/python/silver/ntb_silver_bdss_vt_text_data_stgload
+            base_parameters:
+              SRC_SYS_NAME: TMNGPDB
+              dbx_env: ${var.environment}
+              config_file: ../config/${var.environment}/tmngpdb-conf.yaml
+              rundate: ""
+            source: GIT
+          job_cluster_key: job_wf_lom_data_load_cluster
+          max_retries: 2
+          min_retry_interval_millis: 120000
+        - task_key: job_tmngpdb_silver_case_events_stgload
+          depends_on:
+            - task_key: job_tmngpdb_silver_tmapplser_inc_call
+          notebook_task:
+            notebook_path: notebooks/python/silver/ntb_silver_bdss_case_events_stgload
+            base_parameters:
+              SRC_SYS_NAME: TMNGPDB
+              dbx_env: ${var.environment}
+              config_file: ../config/${var.environment}/tmngpdb-conf.yaml
+              rundate: ""
+            source: GIT
+          job_cluster_key: job_wf_lom_data_load_cluster
+          max_retries: 2
+          min_retry_interval_millis: 120000
+        - task_key: job_tmngpdb_silver_case_file_data_stgload
+          depends_on:
+            - task_key: job_tmngpdb_silver_tmapplser_inc_call
+          notebook_task:
+            notebook_path: notebooks/python/silver/ntb_silver_bdss_case_file_data_stgload
+            base_parameters:
+              SRC_SYS_NAME: TMNGPDB
+              dbx_env: ${var.environment}
+              config_file: ../config/${var.environment}/tmngpdb-conf.yaml
+              rundate: ""
+            source: GIT
+          job_cluster_key: job_wf_lom_data_load_cluster
+          max_retries: 2
+          min_retry_interval_millis: 120000
+        - task_key: job_tmngpdb_silver_correspondent_data_stgload
+          depends_on:
+            - task_key: job_tmngpdb_silver_tmapplser_inc_call
+          notebook_task:
+            notebook_path: notebooks/python/silver/ntb_silver_bdss_correspondent_data_stgload
+            base_parameters:
+              SRC_SYS_NAME: TMNGPDB
+              dbx_env: ${var.environment}
+              config_file: ../config/${var.environment}/tmngpdb-conf.yaml
+              rundate: ""
+            source: GIT
+          job_cluster_key: job_wf_lom_data_load_cluster
+          max_retries: 2
+          min_retry_interval_millis: 120000
+        - task_key: job_tmngpdb_silver_foreign_apps_stgload
+          depends_on:
+            - task_key: job_tmngpdb_silver_tmapplser_inc_call
+          notebook_task:
+            notebook_path: notebooks/python/silver/ntb_silver_bdss_foreign_apps_stgload
+            base_parameters:
+              SRC_SYS_NAME: TMNGPDB
+              dbx_env: ${var.environment}
+              config_file: ../config/${var.environment}/tmngpdb-conf.yaml
+              rundate: ""
+            source: GIT
+          job_cluster_key: job_wf_lom_data_load_cluster
+          max_retries: 2
+          min_retry_interval_millis: 120000
+      job_clusters:
+        - job_cluster_key: job_wf_lom_data_load_cluster
+          new_cluster:
+            policy_id: ${var.policy_id}
+            cluster_name: ""
+            spark_version: ${var.runtime}
+            spark_conf:
+              spark.sql.files.ignoreMissingFiles: "true"
+            aws_attributes:
+              first_on_demand: 1
+              availability: SPOT_WITH_FALLBACK
+              zone_id: auto
+              instance_profile_arn: ${var.instance_profile_arn}
+              spot_bid_price_percent: 100
+            node_type_id: i4i.xlarge
+            custom_tags:
+              Environment: ${var.environment}
+              GroupName: Trademark
+              ComponentID: ${var.ComponentID}
+              team: product
+              Component: TMDC
+              SubGroup: TRM
+            cluster_log_conf:
+              s3:
+                destination: s3://bdr-databricks-app-${var.environment}/auditlogs-data/1025-213227-u87y9ym6
+                  (us-east-1)
+                region: us-west-2
+                enable_encryption: true
+                canned_acl: bucket-owner-full-control
+            spark_env_vars:
+              SPARK_VERSION: "3.2"
+            enable_elastic_disk: true
+            data_security_mode: SINGLE_USER
+            runtime_engine: STANDARD
+            autoscale:
+              min_workers: 2
+              max_workers: 12
+      git_source:
+        git_url: https://prod-cicm.uspto.gov/gitlab/tm-tmdc/trm-dpl.git
+        git_provider: gitLabEnterpriseEdition
+        git_branch: ${var.git_branch}
+      run_as:
+        service_principal_name: c0e8744c-4859-4397-b822-2f629cf629dc
+permissions:
+  - level: ${var.editor}
+    group_name: ${var.editorteam}
+  - level: ${var.reader}
+    group_name: ${var.readerteam}
+  - level: CAN_MANAGE
+    service_principal_name: c0e8744c-4859-4397-b822-2f629cf629dc

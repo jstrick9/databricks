@@ -1,0 +1,98 @@
+resources:
+  jobs:
+    wf_tmngpdb_bronze_load_group10_jdbc_logs:
+      name: wf_tmngpdb_bronze_load_group10_jdbc_logs
+      email_notifications:
+        on_success:
+          - jayanth.bandi@USPTO.GOV
+        on_failure:
+          - jayanth.bandi@USPTO.GOV
+          - ODBDDataLakeTeam@uspto.gov
+      notification_settings:
+        no_alert_for_canceled_runs: true
+      timeout_seconds: 54000
+      schedule:
+        quartz_cron_expression: 58 0 3 ? * MON-FRI
+        timezone_id: America/New_York
+        pause_status: UNPAUSED
+      tasks:
+        - task_key: job_tmngpdb_bronze_control_table_load_group10
+          notebook_task:
+            notebook_path: notebooks/python/bronze/ntb_cmn_bronze_job_control_load
+            base_parameters:
+              dbx_env: ${var.environment}
+              SRC_SYS_NAME: TMNGPDB
+              config_file: ../config/${var.environment}/tmngpdb-conf.yaml
+              data_load_group: group10
+            source: GIT
+          job_cluster_key: job_wf_lom_data_load_cluster
+        - task_key: job_tmngpdb_bronze_load_group10
+          depends_on:
+            - task_key: job_tmngpdb_bronze_control_table_load_group10
+          for_each_task:
+            inputs: '["TM_FILINGS","TM_FILING_BASES","TM_ITU_EXTENSION", "TM_ITU_EXTENSION_H","TM_ITU_H","TM_OG_PUBLICATIONS","TM_OG_PUBLICATIONS_H","TM_CLASS_REFERENCE_H","TM_GROUP","TM_GROUP_ITEM","TM_LITERAL_H", "TM_LOCATIONS_H","TM_MAILING_ADDR_H", "TM_MARK_TYPE","TM_MARK_TYPE_H","TM_NOTIFICATION_MESSAGE","TM_ORGANIZATION_LOCATION","TM_PHYSICAL_LOCATION", "TM_POST_REGISTRATION", "TM_PROCEEDING","TM_PROCEEDING_H", "TM_PSEUDO_CLASS","TM_PSEUDO_CLASS_H", "TM_PSEUDO_MARK","TM_DESIGN_ELEMENT_H","TM_FOREIGN_BASIS", "TM_PRIOR_REGISTRATION","TRAM_CL","TRAM_CM","TRAM_MC","STND_FSM_TYPE_EVENT","STND_FSM_TYPE_STATE","STND_FSM_TYPE_STATE_RULE","STND_LEGACY_STATUS","STND_OFFICE_ACTION_CT_STATE","STND_OFFICE_ACTN_RULE_ITM"]'
+            concurrency: 5
+            task:
+              task_key: job_tmngpdb_bronze_load_group10_iteration
+              notebook_task:
+                notebook_path: notebooks/python/bronze/ntb_tmngpdb_bronze_jdbc_cdc_load_table_level
+                base_parameters:
+                  dbx_env: ${var.environment}
+                  full_data_refresh: N
+                  data_load_group: group10
+                  SRC_SYS_NAME: TMNGPDB
+                  config_file: ../config/${var.environment}/tmngpdb-conf.yaml
+                  table_name: "{{input}}"
+                source: GIT
+              job_cluster_key: job_wf_lom_data_load_cluster
+              min_retry_interval_millis: 60000
+      job_clusters:
+        - job_cluster_key: job_wf_lom_data_load_cluster
+          new_cluster:
+            policy_id: ${var.policy_id}
+            cluster_name: ""
+            spark_version: ${var.runtime}
+            spark_conf:
+              spark.sql.files.ignoreMissingFiles: "true"
+            aws_attributes:
+              first_on_demand: 1
+              availability: SPOT_WITH_FALLBACK
+              zone_id: auto
+              instance_profile_arn: ${var.instance_profile_arn}
+              spot_bid_price_percent: 100
+            node_type_id: i4i.xlarge
+            custom_tags:
+              Environment: ${var.environment}
+              GroupName: Trademark
+              ComponentID: ${var.ComponentID}
+              team: product
+              Component: TMDC
+              SubGroup: TRM
+            cluster_log_conf:
+              s3:
+                destination: s3://bdr-databricks-app-${var.environment}/auditlogs-data/1025-213227-u87y9ym6
+                  (us-east-1)
+                region: us-west-2
+                enable_encryption: true
+                canned_acl: bucket-owner-full-control
+            spark_env_vars:
+              SPARK_VERSION: "3.2"
+            enable_elastic_disk: true
+            data_security_mode: SINGLE_USER
+            runtime_engine: STANDARD
+            autoscale:
+              min_workers: 2
+              max_workers: 12
+      git_source:
+        git_url: https://prod-cicm.uspto.gov/gitlab/tm-tmdc/trm-dpl.git
+        git_provider: gitLabEnterpriseEdition
+        git_branch: ${var.git_branch}
+      run_as:
+        service_principal_name: c0e8744c-4859-4397-b822-2f629cf629dc
+permissions:
+  - level: ${var.editor}
+    group_name: ${var.editorteam}
+  - level: ${var.reader}
+    group_name: ${var.readerteam}
+  - level: CAN_MANAGE
+    service_principal_name: c0e8744c-4859-4397-b822-2f629cf629dc

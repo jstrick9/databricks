@@ -1,0 +1,310 @@
+resources:
+  jobs:
+    wf_cmn_catalog_data_match_initial_setup:
+      name: wf_cmn_catalog_data_match_initial_setup
+      email_notifications:
+        on_success:
+          - ODBDDataLakeTeam@uspto.gov
+        on_failure:
+          - jayanth.bandi@USPTO.GOV
+          - ODBDDataLakeTeam@uspto.gov
+        no_alert_for_skipped_runs: true
+      notification_settings:
+        no_alert_for_skipped_runs: true
+        no_alert_for_canceled_runs: true
+      tasks:
+        - task_key: job_efoiap_catalog_dq_proc_defn_rfrnc_load
+          notebook_task:
+            notebook_path: notebooks/python/bronze/ntb_cmn_bronze_proc_defn_rfrnc_load_logs
+            base_parameters:
+              dbx_env: ${var.environment}
+              SRC_SYS_NAME: EFOIAP
+            source: GIT
+          job_cluster_key: job_wf_lom_data_load_cluster
+        - task_key: job_efoiap_silver_ddl
+          notebook_task:
+            notebook_path: notebooks/sql/ddls/silver/ddls_efoiap_silver
+            base_parameters:
+              dbx_env: ${var.environment}
+            source: GIT
+          job_cluster_key: job_wf_lom_data_load_cluster
+        - task_key: job_eogadmin_catalog_dq_proc_defn_rfrnc_load
+          depends_on:
+            - task_key: job_efoiap_catalog_dq_proc_defn_rfrnc_load
+          notebook_task:
+            notebook_path: notebooks/python/bronze/ntb_cmn_bronze_proc_defn_rfrnc_load_logs
+            base_parameters:
+              dbx_env: ${var.environment}
+              SRC_SYS_NAME: EOGADMIN
+            source: GIT
+          job_cluster_key: job_wf_lom_data_load_cluster
+        - task_key: job_eogadmin_silver_ddl
+          depends_on:
+            - task_key: job_efoiap_silver_ddl
+          notebook_task:
+            notebook_path: notebooks/sql/ddls/silver/ddls_eogadmin_silver
+            base_parameters:
+              dbx_env: ${var.environment}
+            source: GIT
+          job_cluster_key: job_wf_lom_data_load_cluster
+        - task_key: job_jbteasps_catalog_dq_proc_defn_rfrnc_load
+          depends_on:
+            - task_key: job_eogadmin_catalog_dq_proc_defn_rfrnc_load
+          notebook_task:
+            notebook_path: notebooks/python/bronze/ntb_cmn_bronze_proc_defn_rfrnc_load_logs
+            base_parameters:
+              dbx_env: ${var.environment}
+              SRC_SYS_NAME: JBTEASPS
+            source: GIT
+          job_cluster_key: job_wf_lom_data_load_cluster
+        - task_key: job_jbteasps_silver_ddl
+          depends_on:
+            - task_key: job_eogadmin_silver_ddl
+          notebook_task:
+            notebook_path: notebooks/sql/ddls/silver/ddls_jbteasps_silver
+            base_parameters:
+              dbx_env: ${var.environment}
+            source: GIT
+          job_cluster_key: job_wf_lom_data_load_cluster
+        - task_key: job_proceeding_catalog_dq_proc_defn_rfrnc_load
+          depends_on:
+            - task_key: job_jbteasps_catalog_dq_proc_defn_rfrnc_load
+          notebook_task:
+            notebook_path: notebooks/python/bronze/ntb_cmn_bronze_proc_defn_rfrnc_load_logs
+            base_parameters:
+              dbx_env: ${var.environment}
+              SRC_SYS_NAME: PROCEEDING
+            source: GIT
+          job_cluster_key: job_wf_lom_data_load_cluster
+        - task_key: job_proceeding_silver_ddl
+          depends_on:
+            - task_key: job_jbteasps_silver_ddl
+          notebook_task:
+            notebook_path: notebooks/sql/ddls/silver/ddls_jbteasps_silver
+            base_parameters:
+              dbx_env: ${var.environment}
+            source: GIT
+          job_cluster_key: job_wf_lom_data_load_cluster
+        - task_key: job_tmbuscalendar_catalog_dq_proc_defn_rfrnc_load
+          depends_on:
+            - task_key: job_proceeding_catalog_dq_proc_defn_rfrnc_load
+          notebook_task:
+            notebook_path: notebooks/python/bronze/ntb_cmn_bronze_proc_defn_rfrnc_load_logs
+            base_parameters:
+              dbx_env: ${var.environment}
+              SRC_SYS_NAME: TMBUSCALENDAR
+            source: GIT
+          job_cluster_key: job_wf_lom_data_load_cluster
+        - task_key: job_tmbuscalendar_silver_ddl
+          depends_on:
+            - task_key: job_proceeding_silver_ddl
+          notebook_task:
+            notebook_path: notebooks/sql/ddls/silver/ddls_tmbuscalendar_silver
+            base_parameters:
+              dbx_env: ${var.environment}
+            source: GIT
+          job_cluster_key: job_wf_lom_data_load_cluster
+        - task_key: job_tmintltm_catalog_dq_proc_defn_rfrnc_load
+          depends_on:
+            - task_key: job_tmbuscalendar_catalog_dq_proc_defn_rfrnc_load
+          notebook_task:
+            notebook_path: notebooks/python/bronze/ntb_cmn_bronze_proc_defn_rfrnc_load_logs
+            base_parameters:
+              dbx_env: ${var.environment}
+              SRC_SYS_NAME: TMINTLTM
+            source: GIT
+          job_cluster_key: job_wf_lom_data_load_cluster
+        - task_key: job_tmintltm_silver_ddl
+          depends_on:
+            - task_key: job_tmbuscalendar_silver_ddl
+          notebook_task:
+            notebook_path: notebooks/sql/ddls/silver/ddls_tmintltm_silver
+            base_parameters:
+              dbx_env: ${var.environment}
+            source: GIT
+          job_cluster_key: job_wf_lom_data_load_cluster
+        - task_key: job_tmngfpepp_catalog_dq_proc_defn_rfrnc_load
+          depends_on:
+            - task_key: job_tmintltm_catalog_dq_proc_defn_rfrnc_load
+          notebook_task:
+            notebook_path: notebooks/python/bronze/ntb_cmn_bronze_proc_defn_rfrnc_load_logs
+            base_parameters:
+              dbx_env: ${var.environment}
+              SRC_SYS_NAME: TMNGFPEPP
+            source: GIT
+          job_cluster_key: job_wf_lom_data_load_cluster
+        - task_key: job_tmngfpepp_silver_ddl
+          depends_on:
+            - task_key: job_tmintltm_silver_ddl
+          notebook_task:
+            notebook_path: notebooks/sql/ddls/silver/ddls_tmngfpepp_silver
+            base_parameters:
+              dbx_env: ${var.environment}
+            source: GIT
+          job_cluster_key: job_wf_lom_data_load_cluster
+        - task_key: job_tmngidmp_catalog_dq_proc_defn_rfrnc_load
+          depends_on:
+            - task_key: job_tmngfpepp_catalog_dq_proc_defn_rfrnc_load
+          notebook_task:
+            notebook_path: notebooks/python/bronze/ntb_cmn_bronze_proc_defn_rfrnc_load_logs
+            base_parameters:
+              dbx_env: ${var.environment}
+              SRC_SYS_NAME: TMNGIDMP
+            source: GIT
+          job_cluster_key: job_wf_lom_data_load_cluster
+        - task_key: job_tmngidmp_silver_ddl
+          depends_on:
+            - task_key: job_tmngfpepp_silver_ddl
+          notebook_task:
+            notebook_path: notebooks/sql/ddls/silver/ddls_tmngidmp_silver
+            base_parameters:
+              dbx_env: ${var.environment}
+            source: GIT
+          job_cluster_key: job_wf_lom_data_load_cluster
+        - task_key: job_tmngpdb_catalog_dq_proc_defn_rfrnc_load
+          depends_on:
+            - task_key: job_tmngidmp_catalog_dq_proc_defn_rfrnc_load
+          notebook_task:
+            notebook_path: notebooks/python/bronze/ntb_cmn_bronze_proc_defn_rfrnc_load_logs
+            base_parameters:
+              dbx_env: ${var.environment}
+              SRC_SYS_NAME: TMNGPDB
+            source: GIT
+          job_cluster_key: job_wf_lom_data_load_cluster
+        - task_key: job_tmngpdb_silver_ddl
+          depends_on:
+            - task_key: job_tmngidmp_silver_ddl
+          notebook_task:
+            notebook_path: notebooks/sql/ddls/silver/ddls_tmngpdb_silver
+            base_parameters:
+              dbx_env: ${var.environment}
+            source: GIT
+          job_cluster_key: job_wf_lom_data_load_cluster
+        - task_key: job_tmprodvty_catalog_dq_proc_defn_rfrnc_load
+          depends_on:
+            - task_key: job_tmngpdb_catalog_dq_proc_defn_rfrnc_load
+          notebook_task:
+            notebook_path: notebooks/python/bronze/ntb_cmn_bronze_proc_defn_rfrnc_load_logs
+            base_parameters:
+              dbx_env: ${var.environment}
+              SRC_SYS_NAME: TMPRODVTY
+            source: GIT
+          job_cluster_key: job_wf_lom_data_load_cluster
+        - task_key: job_tmprodvty_silver_ddl
+          depends_on:
+            - task_key: job_tmngpdb_silver_ddl
+          notebook_task:
+            notebook_path: notebooks/sql/ddls/silver/ddls_tmprodvty_silver
+            base_parameters:
+              dbx_env: ${var.environment}
+            source: GIT
+          job_cluster_key: job_wf_lom_data_load_cluster
+        - task_key: job_tmrefdata_silver_ddl
+          depends_on:
+            - task_key: job_tmprodvty_silver_ddl
+          notebook_task:
+            notebook_path: notebooks/sql/ddls/silver/ddls_tmrefdata_silver
+            base_parameters:
+              dbx_env: ${var.environment}
+            source: GIT
+          job_cluster_key: job_wf_lom_data_load_cluster
+        - task_key: job_tmreviews_catalog_dq_proc_defn_rfrnc_load
+          depends_on:
+            - task_key: job_tmprodvty_catalog_dq_proc_defn_rfrnc_load
+          notebook_task:
+            notebook_path: notebooks/python/bronze/ntb_cmn_bronze_proc_defn_rfrnc_load_logs
+            base_parameters:
+              dbx_env: ${var.environment}
+              SRC_SYS_NAME: TMREVIEWS
+            source: GIT
+          job_cluster_key: job_wf_lom_data_load_cluster
+        - task_key: job_tmreviews_silver_ddl
+          depends_on:
+            - task_key: job_tmrefdata_silver_ddl
+          notebook_task:
+            notebook_path: notebooks/sql/ddls/silver/ddls_tmreviews_silver
+            base_parameters:
+              dbx_env: ${var.environment}
+            source: GIT
+          job_cluster_key: job_wf_lom_data_load_cluster
+        - task_key: job_tmworker_catalog_dq_proc_defn_rfrnc_load
+          depends_on:
+            - task_key: job_tmreviews_catalog_dq_proc_defn_rfrnc_load
+          notebook_task:
+            notebook_path: notebooks/python/bronze/ntb_cmn_bronze_proc_defn_rfrnc_load_logs
+            base_parameters:
+              dbx_env: ${var.environment}
+              SRC_SYS_NAME: TMWORKER
+            source: GIT
+          job_cluster_key: job_wf_lom_data_load_cluster
+        - task_key: job_tmrefdata_catalog_dq_proc_defn_rfrnc_load
+          depends_on:
+            - task_key: job_tmworker_catalog_dq_proc_defn_rfrnc_load
+          notebook_task:
+            notebook_path: notebooks/python/bronze/ntb_cmn_bronze_proc_defn_rfrnc_load_logs
+            base_parameters:
+              dbx_env: ${var.environment}
+              SRC_SYS_NAME: TMREFDATA
+            source: GIT
+          job_cluster_key: job_wf_lom_data_load_cluster
+        - task_key: job_tmworker_silver_ddl
+          depends_on:
+            - task_key: job_tmreviews_silver_ddl
+          notebook_task:
+            notebook_path: notebooks/sql/ddls/silver/ddls_tmworker_silver
+            base_parameters:
+              dbx_env: ${var.environment}
+            source: GIT
+          job_cluster_key: job_wf_lom_data_load_cluster
+      job_clusters:
+        - job_cluster_key: job_wf_lom_data_load_cluster
+          new_cluster:
+            policy_id: ${var.policy_id}
+            cluster_name: ""
+            spark_version: ${var.runtime}
+            spark_conf:
+              spark.sql.files.ignoreMissingFiles: "true"
+            aws_attributes:
+              first_on_demand: 1
+              availability: SPOT_WITH_FALLBACK
+              zone_id: auto
+              instance_profile_arn: ${var.instance_profile_arn}
+              spot_bid_price_percent: 100
+              ebs_volume_count: 0
+            node_type_id: i4i.large
+            custom_tags:
+              Environment: ${var.environment}
+              GroupName: Trademark
+              ComponentID: ${var.ComponentID}
+              team: product
+              Component: TMDC
+              SubGroup: TRM
+            cluster_log_conf:
+              s3:
+                destination: s3://bdr-databricks-app-${var.environment}/auditlogs-data/1025-213227-u87y9ym6
+                  (us-east-1)
+                region: us-west-2
+                enable_encryption: true
+                canned_acl: bucket-owner-full-control
+            spark_env_vars:
+              PYSPARK_PYTHON: /databricks/python3/bin/python3
+              SPARK_VERSION: "3.2"
+            enable_elastic_disk: true
+            data_security_mode: SINGLE_USER
+            runtime_engine: STANDARD
+            autoscale:
+              min_workers: 8
+              max_workers: 8
+      git_source:
+        git_url: https://prod-cicm.uspto.gov/gitlab/tm-tmdc/trm-dpl.git
+        git_provider: gitLabEnterpriseEdition
+        git_branch: ${var.git_branch}
+      run_as:
+        service_principal_name: c0e8744c-4859-4397-b822-2f629cf629dc
+permissions:
+  - level: ${var.editor}
+    group_name: ${var.editorteam}
+  - level: ${var.reader}
+    group_name: ${var.readerteam}
+  - level: CAN_MANAGE
+    service_principal_name: c0e8744c-4859-4397-b822-2f629cf629dc
