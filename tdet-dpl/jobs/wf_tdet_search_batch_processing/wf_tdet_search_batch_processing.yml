@@ -1,0 +1,93 @@
+resources:
+  jobs:
+    wf_tdet_batch_processing:
+      name: wf_tdet_batch_processing
+      email_notifications:
+        on_success:
+          - ODBDDataLakeTeam@uspto.gov
+        on_failure:
+          - ODBDDataLakeTeam@uspto.gov
+      notification_settings:
+        no_alert_for_canceled_runs: true
+      timeout_seconds: 9000
+      schedule:
+        quartz_cron_expression: 36 0 7 * * ?
+        timezone_id: America/New_York
+        pause_status: PAUSED
+      tasks:
+        - task_key: wf_tdet_search_batch_processing
+          notebook_task:
+            notebook_path: notebooks/python/gold/ntb_tdet_search_gold_batch_processing
+            base_parameters:
+              dbx_env: ${var.environment}
+              config_file: ../config/${var.environment}/tdet-conf.yaml
+            source: GIT
+          job_cluster_key: job_wf_tdet_search_batch_processing_cluster
+          min_retry_interval_millis: 60000
+        - task_key: wf_tdet_data_vrfctn_frmwrk
+          depends_on:
+            - task_key: wf_tdet_search_batch_processing
+          notebook_task:
+            notebook_path: notebooks/shared/ntb_tdet_data_vrfctn_frmwrk
+            base_parameters:
+              dbx_env: ${var.environment}
+              procedure_category_code: ZERO_COUNT_CHECK
+              config_file: ../config/${var.environment}/tdet-conf.yaml
+            source: GIT
+          job_cluster_key: job_wf_tdet_search_batch_processing_cluster
+      job_clusters:
+        - job_cluster_key: job_wf_tdet_search_batch_processing_cluster
+          new_cluster:
+            policy_id: ${var.policy_id}
+            cluster_name: ""
+            spark_version: ${var.runtime}
+            spark_conf:
+              spark.sql.files.ignoreMissingFiles: "true"
+            aws_attributes:
+              first_on_demand: 1
+              availability: SPOT_WITH_FALLBACK
+              zone_id: auto
+              instance_profile_arn: ${var.instance_profile_arn}
+              spot_bid_price_percent: 100
+              ebs_volume_count: 0
+            node_type_id: i4i.xlarge
+            custom_tags:
+              Environment: ${var.environment}
+              GroupName: Trademark
+              ComponentID: ${var.ComponentID}
+              team: product
+              Component: TMDC
+              SubGroup: TDET
+            cluster_log_conf:
+              s3:
+                destination: s3://${var.cdc_bucket}/auditlogs-data/1025-213227-u87y9ym6
+                  (us-east-1)
+                region: us-west-2
+                enable_encryption: true
+                canned_acl: bucket-owner-full-control
+            spark_env_vars:
+              PYSPARK_PYTHON: /databricks/python3/bin/python3
+              SPARK_VERSION: "3.2"
+            enable_elastic_disk: true
+            data_security_mode: SINGLE_USER
+            runtime_engine: STANDARD
+            autoscale:
+              min_workers: 2
+              max_workers: 12
+      git_source:
+        git_url: https://prod-cicm.uspto.gov/gitlab/tm-tmdc/tdet-dpl.git
+        git_provider: gitLabEnterpriseEdition
+        git_branch: ${var.git_branch}
+      tags:
+        Component: TMDC
+        ComponentID: ${var.ComponentID}
+        Environment: ${var.environment}
+      run_as:
+        service_principal_name: c0e8744c-4859-4397-b822-2f629cf629dc
+permissions:
+  - level: ${var.editor}
+    group_name: ${var.editorteam}
+  - level: ${var.reader}
+    group_name: ${var.readerteam}
+  - level: CAN_MANAGE
+    service_principal_name: c0e8744c-4859-4397-b822-2f629cf629dc

@@ -1,0 +1,8 @@
+command:
+  - streamlit
+  - run
+  - Home.py
+
+env:
+  - name: DATABRICKS_WAREHOUSE_NAME
+    value: "TDET"

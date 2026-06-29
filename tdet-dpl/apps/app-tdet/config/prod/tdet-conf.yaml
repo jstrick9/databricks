@@ -1,0 +1,55 @@
+schema:
+  trgt_catalog: "tdet"
+  trgt_schema: "gold"
+  source_catalog: "tdet"
+  source_schema: "silver"
+  tmngpdb_catalog: "trm_tmngpdb"
+  
+  tables:
+    file_history: "tdet_app_file_history"
+    search_history: "tdet_app_search_history"
+    search_detail: "tdet_app_search_history_detail"
+
+database:
+  bulk_insert_threshold: 5000
+  batch_size_small: 5000
+  batch_size_medium: 10000
+  batch_size_large: 20000
+  query_timeout_seconds: 600  # Longer for production
+  max_retries: 5
+
+history:
+  max_records: 1000  # More history in prod
+  export_chunksize: 100000
+  cache_ttl_seconds: 7200
+
+app:
+  version: "1.0.0"
+  environment: "prod"
+  max_file_size_mb: 100
+  session_timeout_minutes: 30  # Shorter for security
+
+sql:
+  template_dir: "sql"
+  detail_query: "tdet_app_search_history_detail.sql"
+
+validation:
+  max_serial_numbers_per_search: 500000  # Higher limit for prod
+  max_search_history_days: 730
+  min_comment_length: 1
+  max_comment_length: 250
+
+logging:
+  level: "INFO"
+  log_queries: false  # CRITICAL - Do not log SQL (PII risk)
+  log_performance: true
+  log_user_actions: true  # Audit trail
+
+# ETL Integration (for reference/documentation)
+etl:
+  source_table: "tdet_app_search"          # Table created by ETL
+  etl_config_path: "notebooks/config/dev/tdet-conf.yaml"
+  etl_notebook_path: "notebooks/python/silver/ntb_tdet_app_search"
+  load_frequency: "daily"
+  data_freshness_hours: 24
+  contact_email: "joshua.strickland@uspto.gov"

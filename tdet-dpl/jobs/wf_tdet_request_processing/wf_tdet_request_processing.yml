@@ -1,0 +1,84 @@
+resources:
+  jobs:
+    wf_tdet_request_processing:
+      name: wf_tdet_request_processing
+      email_notifications:
+        on_success:
+          - ODBDDataLakeTeam@uspto.gov
+        on_failure:
+          - ODBDDataLakeTeam@uspto.gov
+      notification_settings:
+        no_alert_for_canceled_runs: true
+      timeout_seconds: 3600
+      trigger:
+        pause_status: PAUSED
+        file_arrival:
+          url: s3://tdet-${var.environment}/requestFolder/
+          min_time_between_triggers_seconds: 61
+          wait_after_last_change_seconds: 61
+      tasks:
+        - task_key: wf_tdet_search_request_processing
+          notebook_task:
+            notebook_path: notebooks/python/gold/ntb_tdet_search_app_request_processing
+            base_parameters:
+              dbx_env: ${var.environment}
+              config_file: ../config/${var.environment}/tdet-conf.yaml
+            source: GIT
+          job_cluster_key: job_wf_tdet_search_request_processing_cluster
+          min_retry_interval_millis: 60000
+      job_clusters:
+        - job_cluster_key: job_wf_tdet_search_request_processing_cluster
+          new_cluster:
+            policy_id: ${var.policy_id}
+            cluster_name: ""
+            spark_version: ${var.runtime}
+            spark_conf:
+              spark.sql.files.ignoreMissingFiles: "true"
+            aws_attributes:
+              first_on_demand: 1
+              availability: SPOT_WITH_FALLBACK
+              zone_id: auto
+              instance_profile_arn: ${var.instance_profile_arn}
+              spot_bid_price_percent: 100
+              ebs_volume_count: 0
+            node_type_id: i4i.xlarge
+            custom_tags:
+              Environment: ${var.environment}
+              KeepOn: Mo+Tu+We+Th+Fr+Sa+Su:22-02
+              GroupName: Trademark
+              ComponentID: ${var.ComponentID}
+              team: product
+              Component: TMDC
+              SubGroup: TDET
+            cluster_log_conf:
+              s3:
+                destination: s3://${var.cdc_bucket}/auditlogs-data/1025-213227-u87y9ym6
+                  (us-east-1)
+                region: us-west-2
+                enable_encryption: true
+                canned_acl: bucket-owner-full-control
+            spark_env_vars:
+              SPARK_VERSION: 3.5.2
+            enable_elastic_disk: true
+            data_security_mode: SINGLE_USER
+            runtime_engine: STANDARD
+            autoscale:
+              min_workers: 2
+              max_workers: 8
+      git_source:
+        git_url: https://prod-cicm.uspto.gov/gitlab/tm-tmdc/tdet-dpl.git
+        git_provider: gitLabEnterpriseEdition
+        git_branch: ${var.git_branch}
+      tags:
+        Component: TMDC
+        ComponentID: ${var.ComponentID}
+        Environment: ${var.environment}
+      run_as:
+        service_principal_name: c0e8744c-4859-4397-b822-2f629cf629dc
+permissions:
+  - level: ${var.editor}
+    group_name: ${var.editorteam}
+  - level: ${var.reader}
+    group_name: ${var.readerteam}
+  - level: CAN_MANAGE
+    service_principal_name: c0e8744c-4859-4397-b822-2f629cf629dc

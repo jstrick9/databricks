@@ -1,0 +1,17 @@
+schema:
+    trgt_catalog: "tdet"
+    source_tmngpdb_catalog: "trm_tmngpdb"
+    source_tmintltm_catalog: "trm_tmintltm"
+    source_reporting_catalog: "trm_reporting"
+    source_worker_catalog: "trm_tmworker"
+    data_quality_catalog: "data_quality"
+alerting:
+    email: "ODBDDataLakeTeam@uspto.gov"
+s3:
+    certificate_bucket: "databricks-prod-tmdc"
+    write_bucket: "tdet-prod"
+    api_update_endpoint: "https://pbbdr0detb-1.cloud.uspto.gov:8443/tdet-api/api/v1/updaterequest"
+secrets:
+    tdet_api_scope: "tdet_api"
+okta:
+    auth_url: "https://auth.uspto.gov/oauth2/aus462q76dSh7EUHU4h7/v1/token"

@@ -1,0 +1,62 @@
+# Database Schema Configuration
+schema:
+  trgt_catalog: "tdet_dev"
+  trgt_schema: "gold"
+  source_catalog: "tdet_dev"
+  source_schema: "silver"
+  tmngpdb_catalog: "trm_tmngpdb_dev"
+  
+  tables:
+    file_history: "tdet_app_file_history"
+    search_history: "tdet_app_search_history"
+    search_detail: "tdet_app_search_history_detail"
+
+# Database Operation Settings
+database:
+  bulk_insert_threshold: 5000
+  batch_size_small: 5000
+  batch_size_medium: 10000
+  batch_size_large: 20000
+  query_timeout_seconds: 300
+  max_retries: 3
+
+# History Page Settings
+history:
+  max_records: 500
+  export_chunksize: 100000
+  cache_ttl_seconds: 3600
+
+# Application Settings
+app:
+  version: "1.0.0"
+  environment: "dev"
+  max_file_size_mb: 50
+  session_timeout_minutes: 60
+
+# SQL Templates
+sql:
+  template_dir: "sql"
+  detail_query: "tdet_app_search_history_detail.sql"
+
+# Data Validation Rules
+validation:
+  max_serial_numbers_per_search: 100000
+  max_search_history_days: 365
+  min_comment_length: 1
+  max_comment_length: 250
+
+# Logging Configuration
+logging:
+  level: "DEBUG"
+  log_queries: true
+  log_performance: true
+  log_user_actions: true
+
+# ETL Integration (for reference/documentation)
+etl:
+  source_table: "tdet_app_search"          # Table created by ETL
+  etl_config_path: "notebooks/config/dev/tdet-conf.yaml"
+  etl_notebook_path: "notebooks/python/silver/ntb_tdet_app_search"
+  load_frequency: "daily"
+  data_freshness_hours: 24
+  contact_email: "joshua.strickland@uspto.gov"

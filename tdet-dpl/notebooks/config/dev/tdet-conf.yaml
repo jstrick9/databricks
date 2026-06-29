@@ -1,0 +1,17 @@
+schema:
+    trgt_catalog: "tdet_dev"
+    source_tmngpdb_catalog: "trm_tmngpdb_dev"
+    source_tmintltm_catalog: "trm_tmintltm_dev"
+    source_reporting_catalog: "trm_reporting_dev"
+    source_worker_catalog: "trm_tmworker_dev"
+    data_quality_catalog: "data_quality_dev"
+alerting:
+    email: "benjamin.fielstra@uspto.gov"
+s3:
+    certificate_bucket: "databricks-lab-tmdc"
+    write_bucket: "tdet-dev"
+    api_update_endpoint: "https://idbbdr0detb0-1.dev2.uspto.gov:8443/tdet-api/api/v1/updaterequest"
+secrets:
+    tdet_api_scope: "tdet_api"
+okta:
+    auth_url: "https://auth-preview.uspto.gov/oauth2/aus6a5vz7iba33aev1d7/v1/token"
