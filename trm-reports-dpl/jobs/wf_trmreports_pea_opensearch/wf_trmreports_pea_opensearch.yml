@@ -1,0 +1,122 @@
+resources:
+  jobs:
+    wf_trmreports_pea_opensearch:
+      name: wf_trmreports_pea_opensearch
+      email_notifications:
+        on_failure:
+          - ODBDDataLakeTeam@uspto.gov
+          - tyson.brown@uspto.gov
+      timeout_seconds: 2400
+      schedule:
+        quartz_cron_expression: 4 0 4/12 * * ?
+        timezone_id: America/New_York
+        pause_status: UNPAUSED
+      tasks:
+        - task_key: job_opensearch_bronze_ta_load
+          notebook_task:
+            notebook_path: notebooks/python/first_level_etl/ntb_bronze_opensearch
+            base_parameters:
+              dbx_env: ${var.environment}
+              Full Load?: N
+              index: trademark_applications
+            source: GIT
+          job_cluster_key: job_wf_opensearch_bronze_load_cluster
+          min_retry_interval_millis: 900000
+        - task_key: job_opensearch_bronze_tqr_load
+          notebook_task:
+            notebook_path: notebooks/python/first_level_etl/ntb_bronze_opensearch
+            base_parameters:
+              dbx_env: ${var.environment}
+              Full Load?: N
+              index: tqr
+            source: GIT
+          job_cluster_key: job_wf_opensearch_bronze_load_cluster
+          min_retry_interval_millis: 900000
+        - task_key: job_opensearch_bronze_ai_reporting_load
+          notebook_task:
+            notebook_path: notebooks/python/first_level_etl/ntb_bronze_opensearch
+            base_parameters:
+              dbx_env: ${var.environment}
+              Full Load?: N
+              index: tm_center_ai_reporting
+            source: GIT
+          job_cluster_key: job_wf_opensearch_bronze_load_cluster
+          min_retry_interval_millis: 900000
+        - task_key: job_opensearch_silver_ta_load
+          depends_on:
+            - task_key: job_opensearch_bronze_ta_load
+          notebook_task:
+            notebook_path: notebooks/python/second_level_etl/ntb_silver_opensearch
+            base_parameters:
+              dbx_env: ${var.environment}
+              index: trademark_applications
+            source: GIT
+          job_cluster_key: job_wf_opensearch_bronze_load_cluster
+        - task_key: job_opensearch_gold_ta_load
+          depends_on:
+            - task_key: job_opensearch_silver_ta_load
+          notebook_task:
+            notebook_path: notebooks/python/third_level_etl/ntb_gold_opensearch
+            base_parameters:
+              dbx_env: ${var.environment}
+              index: trademark_applications
+            source: GIT
+          job_cluster_key: job_wf_opensearch_bronze_load_cluster
+        - task_key: job_opensearch_silver_tqr_load
+          depends_on:
+            - task_key: job_opensearch_bronze_tqr_load
+          notebook_task:
+            notebook_path: notebooks/python/second_level_etl/ntb_silver_opensearch
+            base_parameters:
+              dbx_env: ${var.environment}
+              index: tqr
+            source: GIT
+          job_cluster_key: job_wf_opensearch_bronze_load_cluster
+      job_clusters:
+        - job_cluster_key: job_wf_opensearch_bronze_load_cluster
+          new_cluster:
+            policy_id: ${var.policy_id}
+            cluster_name: ""
+            spark_version: ${var.runtime}
+            aws_attributes:
+              first_on_demand: 1
+              availability: SPOT_WITH_FALLBACK
+              zone_id: auto
+              instance_profile_arn: ${var.instance_profile_arn}
+              spot_bid_price_percent: 100
+              ebs_volume_count: 0
+            node_type_id: i4i.xlarge
+            custom_tags:
+              Environment: ${var.environment}
+              KeepOn: o+Tu+We+Th+Fr+Sa+Su:06-20
+              ComponentID: ${var.ComponentID}
+              team: product
+              Component: TMDC
+            cluster_log_conf:
+              s3:
+                destination: s3://bdr-databricks-app-${var.environment}/auditlogs-data/1025-213227-u87y9ym6
+                  (us-east-1)/0418-165403-fuscis8d (us-west-2)
+                region: us-west-2
+                enable_encryption: true
+                canned_acl: bucket-owner-full-control
+            enable_elastic_disk: true
+            data_security_mode: SINGLE_USER
+            runtime_engine: STANDARD
+            autoscale:
+              min_workers: 2
+              max_workers: 12
+      git_source:
+        git_url: https://prod-cicm.uspto.gov/gitlab/tm-tmdc/trm-reports-dpl.git
+        git_provider: gitLabEnterpriseEdition
+        git_branch: ${var.git_branch}
+      run_as:
+        service_principal_name: c0e8744c-4859-4397-b822-2f629cf629dc
+permissions:
+  - level: ${var.editor}
+    group_name: ${var.editorteam}
+  - level: ${var.reader}
+    group_name: ${var.readerteam}
+  - level: ${var.trademark}
+    group_name: ${var.trademarkteam}
+  - level: CAN_MANAGE
+    service_principal_name: c0e8744c-4859-4397-b822-2f629cf629dc

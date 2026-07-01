@@ -1,0 +1,82 @@
+resources:
+  jobs:
+    wf_trmreports_new_application_fee_table:
+      name: wf_trmreports_new_application_fee_table
+      email_notifications:
+        on_failure:
+          - tyson.brown@uspto.gov
+          - ODBDDataLakeTeam@uspto.gov
+      schedule:
+        quartz_cron_expression: 45 45 4 * * ?
+        timezone_id: America/New_York
+        pause_status: UNPAUSED
+      tasks:
+        - task_key: job_trmreports_oracle_gate_keeper
+          notebook_task:
+            notebook_path: notebooks/python/shared/ntb_oracle_gatekeeper
+            base_parameters:
+              dbx_env: ${var.environment}
+              config_file: ../config/${var.environment}/trmreports-conf.yaml
+            source: GIT
+          job_cluster_key: Job_wf_trmreports_new_application_fee_table
+          max_retries: 2
+          min_retry_interval_millis: 10800000
+        - task_key: job_trmreports_new_application_fee_table
+          depends_on:
+              - task_key: job_trmreports_oracle_gate_keeper
+          notebook_task:
+            notebook_path: notebooks/python/trmreports/ntb_trmreports_new_application_fee_table
+            base_parameters:
+              dbx_env: ${var.environment}
+            source: GIT
+          job_cluster_key: Job_wf_trmreports_new_application_fee_table
+      job_clusters:
+        - job_cluster_key: Job_wf_trmreports_new_application_fee_table
+          new_cluster:
+            policy_id: ${var.policy_id}
+            cluster_name: ""
+            spark_version: ${var.runtime}
+            aws_attributes:
+              first_on_demand: 1
+              availability: SPOT_WITH_FALLBACK
+              zone_id: auto
+              instance_profile_arn: ${var.instance_profile_arn}
+              spot_bid_price_percent: 100
+              ebs_volume_count: 0
+            node_type_id: i4i.large
+            custom_tags:
+              Environment: ${var.environment}
+              GroupName: Trademark
+              ComponentID: ${var.ComponentID}
+              team: product
+              Component: TMDC
+            cluster_log_conf:
+              s3:
+                destination: s3://bdr-databricks-app-${var.environment}/auditlogs-data/1025-213227-u87y9ym6
+                  (us-east-1)/0418-165403-fuscis8d (us-west-2)
+                region: us-west-2
+                enable_encryption: true
+                canned_acl: bucket-owner-full-control
+            spark_env_vars:
+              PYSPARK_PYTHON: /databricks/python3/bin/python3
+            enable_elastic_disk: true
+            data_security_mode: SINGLE_USER
+            runtime_engine: STANDARD
+            autoscale:
+              min_workers: 2
+              max_workers: 8
+      git_source:
+        git_url: https://prod-cicm.uspto.gov/gitlab/tm-tmdc/trm-reports-dpl.git
+        git_provider: gitLabEnterpriseEdition
+        git_branch: ${var.git_branch}
+      run_as:
+        service_principal_name: c0e8744c-4859-4397-b822-2f629cf629dc
+permissions:
+  - level: ${var.editor}
+    group_name: ${var.editorteam}
+  - level: ${var.reader}
+    group_name: ${var.readerteam}
+  - level: ${var.trademark}
+    group_name: ${var.trademarkteam}
+  - level: CAN_MANAGE
+    service_principal_name: c0e8744c-4859-4397-b822-2f629cf629dc

@@ -1,0 +1,85 @@
+resources:
+  jobs:
+    wf_trmreports_preexam_fee_checker:
+      name: wf_trmreports_preexam_fee_checker
+      description: |-
+        A scheduled workflow to alert users of underpaid fees.
+
+        Based on the Alteryx Workflow: https://alteryx-server.uspto.gov/gallery/#!app/PreExam-Fee-Checker-DBX/661554ec4047579f71286c38
+      email_notifications:
+        on_failure:
+          - ODBDDataLakeTeam@uspto.gov
+      timeout_seconds: 7200
+      schedule:
+        quartz_cron_expression: 0 30 2 * * ?
+        timezone_id: America/New_York
+        pause_status: UNPAUSED
+      tasks:
+        - task_key: job_trmreports_oracle_gate_keeper
+          notebook_task:
+            notebook_path: notebooks/python/shared/ntb_oracle_gatekeeper
+            base_parameters:
+              dbx_env: ${var.environment}
+              config_file: ../config/${var.environment}/trmreports-conf.yaml
+            source: GIT
+          job_cluster_key: preexam_fee_checker_cluster
+          max_retries: 2
+          min_retry_interval_millis: 10800000
+        - task_key: job_preexam_fee_checker
+          depends_on:
+            - task_key: job_trmreports_oracle_gate_keeper
+          notebook_task:
+            notebook_path: notebooks/python/trmreports/ntb_trmreports_preexam_fee_checker
+            base_parameters:
+              dbx_env: ${var.environment}
+            source: GIT
+          job_cluster_key: preexam_fee_checker_cluster
+      job_clusters:
+        - job_cluster_key: preexam_fee_checker_cluster
+          new_cluster:
+            policy_id: ${var.policy_id}
+            cluster_name: ""
+            spark_version: ${var.runtime}
+            aws_attributes:
+              first_on_demand: 1
+              availability: SPOT_WITH_FALLBACK
+              zone_id: auto
+              instance_profile_arn: ${var.instance_profile_arn}
+              spot_bid_price_percent: 100
+              ebs_volume_count: 0
+            node_type_id: i4i.large
+            custom_tags:
+              Environment: ${var.environment}
+              GroupName: Trademark
+              ComponentID: ${var.ComponentID}
+              Team: product
+              Component: TMDC
+              SubGroup: Trm-reports
+            enable_elastic_disk: false
+            data_security_mode: SINGLE_USER
+            runtime_engine: STANDARD
+            autoscale:
+              min_workers: 2
+              max_workers: 4
+      git_source:
+        git_url: https://prod-cicm.uspto.gov/gitlab/tm-tmdc/trm-reports-dpl.git
+        git_provider: gitLabEnterpriseEdition
+        git_branch: ${var.git_branch}
+      tags:
+        Alert: ""
+        Environment: ${var.environment}
+        Fee Checker: ""
+        TRM Reporting: ""
+      queue:
+        enabled: true
+      run_as:
+        service_principal_name: c0e8744c-4859-4397-b822-2f629cf629dc
+permissions:
+  - level: ${var.editor}
+    group_name: ${var.editorteam}
+  - level: ${var.reader}
+    group_name: ${var.readerteam}
+  - level: ${var.trademark}
+    group_name: ${var.trademarkteam}
+  - level: CAN_MANAGE
+    service_principal_name: c0e8744c-4859-4397-b822-2f629cf629dc

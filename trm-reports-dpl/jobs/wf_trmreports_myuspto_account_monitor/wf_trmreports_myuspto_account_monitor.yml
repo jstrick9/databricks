@@ -1,0 +1,83 @@
+resources:
+  jobs:
+    wf_trmreports_myuspto_account_monitor:
+      name: wf_trmreports_myuspto_account_monitor
+      email_notifications:
+        on_failure:
+          - ODBDDataLakeTeam@uspto.gov
+      timeout_seconds: 9600
+      schedule:
+        quartz_cron_expression: 42 0 9 * * ?
+        timezone_id: UTC
+        pause_status: PAUSED
+      tasks:
+        - task_key: ntb_trmreports_myuspto_watchlist_load
+          notebook_task:
+            notebook_path: notebooks/python/trmreports/ntb_trmreports_myuspto_watchlist_load
+            base_parameters:
+              dbx_env: ${var.environment}
+              config_file: ../config/${var.environment}/trmreports-conf.yaml
+            source: GIT
+          job_cluster_key: job_cluster_wf_tmreports_myuspto_watchlist
+          max_retries: 1
+          min_retry_interval_millis: 3600000
+          retry_on_timeout: true
+          email_notifications:
+            on_failure:
+              - benjamin.fielstra@uspto.gov
+          notification_settings:
+            alert_on_last_attempt: true
+        - task_key: ntb_trmreports_myuspto_watchlist_report
+          depends_on:
+            - task_key: ntb_trmreports_myuspto_watchlist_load
+          notebook_task:
+            notebook_path: notebooks/python/trmreports/ntb_trmreports_myuspto_watchlist_report
+            base_parameters:
+              dbx_env: ${var.environment}
+              config_file: ../config/${var.environment}/trmreports-conf.yaml
+            source: GIT
+          job_cluster_key: job_cluster_wf_tmreports_myuspto_watchlist
+          max_retries: 1
+          min_retry_interval_millis: 3600000
+      job_clusters:
+        - job_cluster_key: job_cluster_wf_tmreports_myuspto_watchlist
+          new_cluster:
+            policy_id: ${var.policy_id}
+            cluster_name: ""
+            spark_version: ${var.runtime}
+            aws_attributes:
+              first_on_demand: 1
+              zone_id: auto
+              instance_profile_arn: ${var.instance_profile_arn}
+              spot_bid_price_percent: 100
+            node_type_id: m5dn.large
+            custom_tags:
+              Environment: ${var.environment}
+              GroupName: Trademark
+              ComponentID: ${var.ComponentID}
+              Team: product
+              Component: TMDC
+              SubGroup: Trm-reports
+            spark_env_vars:
+              PYSPARK_PYTHON: /databricks/python3/bin/python3
+            enable_elastic_disk: false
+            data_security_mode: DATA_SECURITY_MODE_DEDICATED
+            runtime_engine: STANDARD
+            kind: CLASSIC_PREVIEW
+            is_single_node: true
+      git_source:
+        git_url: https://prod-cicm.uspto.gov/gitlab/tm-tmdc/trm-reports-dpl.git
+        git_provider: gitLabEnterpriseEdition
+        git_branch: ${var.git_branch}
+      run_as:
+        service_principal_name: c0e8744c-4859-4397-b822-2f629cf629dc
+permissions:
+  - level: ${var.editor}
+    group_name: ${var.editorteam}
+  - level: ${var.reader}
+    group_name: ${var.readerteam}
+  - level: ${var.trademark}
+    group_name: ${var.trademarkteam}
+  - level: CAN_MANAGE
+    service_principal_name: c0e8744c-4859-4397-b822-2f629cf629dc
+

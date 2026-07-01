@@ -1,0 +1,125 @@
+resources:
+  jobs:
+    wf_trmreports_teas_goods_services_deleted_data_load:
+      name: wf_trmreports_teas_goods_services_deleted_data_load
+      description: ""
+      email_notifications:
+        on_failure:
+          - ODBDDataLakeTeam@uspto.gov
+      timeout_seconds: 18000
+      schedule:
+        quartz_cron_expression: 0 0 1 * * ?
+        timezone_id: America/New_York
+        pause_status: UNPAUSED
+      tasks:
+        - task_key: ntb_bronze_teas_sect07_xml_file_load
+          notebook_task:
+            notebook_path: notebooks/python/first_level_etl/ntb_bronze_teas_sect07_xml_file_load
+            base_parameters:
+              dbx_env: ${var.environment}
+              post_reg_file_type: SECT07
+            source: GIT
+          job_cluster_key: fee_issue_alert_trigger_cluster
+        - task_key: ntb_bronze_teas_xml_file_load_S08N09
+          notebook_task:
+            notebook_path: notebooks/python/first_level_etl/ntb_bronze_teas_xml_file_load
+            base_parameters:
+              dbx_env: ${var.environment}
+              post_reg_file_type: S08N09
+            source: GIT
+          job_cluster_key: fee_issue_alert_trigger_cluster
+        - task_key: ntb_bronze_teas_xml_file_load_S08N15
+          notebook_task:
+            notebook_path: notebooks/python/first_level_etl/ntb_bronze_teas_xml_file_load
+            base_parameters:
+              dbx_env: ${var.environment}
+              post_reg_file_type: S08N15
+            source: GIT
+          job_cluster_key: fee_issue_alert_trigger_cluster
+        - task_key: ntb_bronze_teas_xml_file_load_S71N15
+          notebook_task:
+            notebook_path: notebooks/python/first_level_etl/ntb_bronze_teas_xml_file_load
+            base_parameters:
+              dbx_env: ${var.environment}
+              post_reg_file_type: S71N15
+            source: GIT
+          job_cluster_key: fee_issue_alert_trigger_cluster
+        - task_key: ntb_bronze_teas_xml_file_load_SECT08
+          notebook_task:
+            notebook_path: notebooks/python/first_level_etl/ntb_bronze_teas_xml_file_load
+            base_parameters:
+              dbx_env: ${var.environment}
+              post_reg_file_type: SECT08
+            source: GIT
+          job_cluster_key: fee_issue_alert_trigger_cluster
+        - task_key: ntb_bronze_teas_xml_file_load_SECT71
+          notebook_task:
+            notebook_path: notebooks/python/first_level_etl/ntb_bronze_teas_xml_file_load
+            base_parameters:
+              dbx_env: ${var.environment}
+              post_reg_file_type: SECT71
+            source: GIT
+          job_cluster_key: fee_issue_alert_trigger_cluster
+        - task_key: ntb_gold_goods_services_deleted_data_load
+          depends_on:
+            - task_key: ntb_bronze_teas_xml_file_load_S08N09
+            - task_key: ntb_bronze_teas_xml_file_load_SECT08
+            - task_key: ntb_bronze_teas_xml_file_load_SECT71
+            - task_key: ntb_bronze_teas_sect07_xml_file_load
+            - task_key: ntb_bronze_teas_xml_file_load_S08N15
+            - task_key: ntb_bronze_teas_xml_file_load_S71N15
+          notebook_task:
+            notebook_path: notebooks/python/third_level_etl/ntb_gold_teas_goods_services_field_classes_deleted_data
+            base_parameters:
+              dbx_env: ${var.environment}
+            source: GIT
+          job_cluster_key: fee_issue_alert_trigger_cluster
+      job_clusters:
+        - job_cluster_key: fee_issue_alert_trigger_cluster
+          new_cluster:
+            policy_id: ${var.policy_id}
+            cluster_name: ""
+            spark_version: ${var.runtime}
+            aws_attributes:
+              first_on_demand: 1
+              availability: SPOT_WITH_FALLBACK
+              zone_id: auto
+              instance_profile_arn: ${var.instance_profile_arn}
+              spot_bid_price_percent: 100
+              ebs_volume_count: 0
+            node_type_id: i4i.large
+            custom_tags:
+              Environment: ${var.environment}
+              GroupName: Trademark
+              ComponentID: ${var.ComponentID}
+              Team: product
+              Component: TMDC
+              SubGroup: Trm-reports
+            enable_elastic_disk: false
+            data_security_mode: SINGLE_USER
+            runtime_engine: STANDARD
+            autoscale:
+              min_workers: 2
+              max_workers: 3
+      git_source:
+        git_url: https://prod-cicm.uspto.gov/gitlab/tm-tmdc/trm-reports-dpl.git
+        git_provider: gitLabEnterpriseEdition
+        git_branch: ${var.git_branch}
+      tags:
+        Alert: ""
+        Environment: ${var.environment}
+        TRM Reporting: ""
+        sn status no hold: ""
+      queue:
+        enabled: true
+      run_as:
+        service_principal_name: c0e8744c-4859-4397-b822-2f629cf629dc
+permissions:
+  - level: ${var.editor}
+    group_name: ${var.editorteam}
+  - level: ${var.reader}
+    group_name: ${var.readerteam}
+  - level: ${var.trademark}
+    group_name: ${var.trademarkteam}
+  - level: CAN_MANAGE
+    service_principal_name: c0e8744c-4859-4397-b822-2f629cf629dc

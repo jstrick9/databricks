@@ -1,0 +1,90 @@
+resources:
+  jobs:
+    wf_trmreports_cmra_loader:
+      name: wf_trmreports_cmra_loader
+      description: |-
+        A workflow used to identify owner addresses that are Commercial Mailing Receiving Agencies (CMRA) status.
+      email_notifications:
+        on_failure:
+          - ODBDDataLakeTeam@uspto.gov
+      timeout_seconds: 2880
+      schedule:
+        quartz_cron_expression: 0 0 10 * * ?
+        timezone_id: America/New_York
+        pause_status: UNPAUSED
+      tasks:
+        - task_key: job_cmra_loader_initial
+          notebook_task:
+            notebook_path: notebooks/python/trmreports/ntb_trmreports_cmra_loader
+            base_parameters:
+              dbx_env: ${var.environment}
+              lookback: 1
+              task: initial
+            source: GIT
+          job_cluster_key: cmra_loader_cluster
+        - task_key: job_cmra_loader_retry
+          depends_on:
+            - task_key: job_cmra_loader_initial
+          notebook_task:
+            notebook_path: notebooks/python/trmreports/ntb_trmreports_cmra_loader
+            base_parameters:
+              dbx_env: ${var.environment}
+              lookback: 1
+              task: retry
+            source: GIT
+          job_cluster_key: cmra_loader_cluster
+        - task_key: job_cmra_address_report
+          depends_on:
+            - task_key: job_cmra_loader_retry
+          notebook_task:
+            notebook_path: notebooks/python/trmreports/ntb_trmreports_cmra_address_report
+            base_parameters:
+              dbx_env: ${var.environment}
+            source: GIT
+          job_cluster_key: cmra_loader_cluster
+      job_clusters:
+        - job_cluster_key: cmra_loader_cluster
+          new_cluster:
+            policy_id: ${var.policy_id}
+            cluster_name: ""
+            spark_version: ${var.runtime}
+            aws_attributes:
+              first_on_demand: 1
+              availability: SPOT_WITH_FALLBACK
+              zone_id: auto
+              instance_profile_arn: ${var.instance_profile_arn}
+              spot_bid_price_percent: 100
+              ebs_volume_count: 0
+            node_type_id: i4i.large
+            custom_tags:
+              Environment: ${var.environment}
+              GroupName: Trademark
+              ComponentID: ${var.ComponentID}
+              Team: product
+              Component: TMDC
+              SubGroup: Trm-reports
+            enable_elastic_disk: false
+            data_security_mode: SINGLE_USER
+            runtime_engine: STANDARD
+            autoscale:
+              min_workers: 2
+              max_workers: 3
+      git_source:
+        git_url: https://prod-cicm.uspto.gov/gitlab/tm-tmdc/trm-reports-dpl.git
+        git_provider: gitLabEnterpriseEdition
+        git_branch: ${var.git_branch}
+      tags:
+        Environment: ${var.environment}
+        CMRA: ""
+        TRM Reporting: ""
+      queue:
+        enabled: true
+      run_as:
+        service_principal_name: c0e8744c-4859-4397-b822-2f629cf629dc
+permissions:
+  - level: ${var.editor}
+    group_name: ${var.editorteam}
+  - level: ${var.reader}
+    group_name: ${var.readerteam}
+  - level: CAN_MANAGE
+    service_principal_name: c0e8744c-4859-4397-b822-2f629cf629dc

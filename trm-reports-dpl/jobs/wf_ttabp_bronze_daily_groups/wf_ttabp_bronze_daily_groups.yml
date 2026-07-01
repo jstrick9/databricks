@@ -1,0 +1,183 @@
+resources:
+  jobs:
+    wf_ttabp_bronze_daily_groups:
+      name: wf_ttabp_bronze_daily_groups
+      email_notifications:
+        on_failure:
+          - tyson.brown@uspto.gov
+          - ODBDDataLakeTeam@uspto.gov
+      schedule:
+        quartz_cron_expression: 1 26 3 * * ?
+        timezone_id: America/New_York
+        pause_status: UNPAUSED
+      tasks:
+        - task_key: job_ttabp_bronze_control_table_load_group1
+          notebook_task:
+            notebook_path: notebooks/python/first_level_etl/ntb_bronze_ttab_job_control_load
+            base_parameters:
+              dbx_env: ${var.environment}
+              data_load_group: group1
+            source: GIT
+          job_cluster_key: Job_wf_ttabp_bronze_load
+        - task_key: job_ttabp_bronze_control_table_load_group2
+          notebook_task:
+            notebook_path: notebooks/python/first_level_etl/ntb_bronze_ttab_job_control_load
+            base_parameters:
+              dbx_env: ${var.environment}
+              data_load_group: group2
+            source: GIT
+          job_cluster_key: Job_wf_ttabp_bronze_load
+        - task_key: job_ttabp_bronze_control_table_load_group3
+          notebook_task:
+            notebook_path: notebooks/python/first_level_etl/ntb_bronze_ttab_job_control_load
+            base_parameters:
+              dbx_env: ${var.environment}
+              data_load_group: group3
+            source: GIT
+          job_cluster_key: Job_wf_ttabp_bronze_load
+        - task_key: job_ttabp_bronze_control_table_load_group4
+          notebook_task:
+            notebook_path: notebooks/python/first_level_etl/ntb_bronze_ttab_job_control_load
+            base_parameters:
+              dbx_env: ${var.environment}
+              data_load_group: group4
+            source: GIT
+          job_cluster_key: Job_wf_ttabp_bronze_load
+        - task_key: job_ttabp_bronze_control_table_load_group5
+          notebook_task:
+            notebook_path: notebooks/python/first_level_etl/ntb_bronze_ttab_job_control_load
+            base_parameters:
+              dbx_env: ${var.environment}
+              data_load_group: group5
+            source: GIT
+          job_cluster_key: Job_wf_ttabp_bronze_load
+        - task_key: job_ttabp_bronze_control_table_load_group7
+          notebook_task:
+            notebook_path: notebooks/python/first_level_etl/ntb_bronze_ttab_job_control_load
+            base_parameters:
+              dbx_env: ${var.environment}
+              data_load_group: group7
+            source: GIT
+          job_cluster_key: Job_wf_ttabp_bronze_load        
+        - task_key: job_ttabp_bronze_load_group1
+          depends_on:
+            - task_key: job_ttabp_bronze_control_table_load_group1
+          notebook_task:
+            notebook_path: notebooks/python/first_level_etl/ntb_bronze_ttabp
+            base_parameters:
+              dbx_env: ${var.environment}
+              data_load_group: group1
+              full_data_refresh: N
+              use_thread_pool_executor_yn: N
+            source: GIT
+          job_cluster_key: Job_wf_ttabp_bronze_load
+        - task_key: job_ttabp_bronze_load_group2
+          depends_on:
+            - task_key: job_ttabp_bronze_control_table_load_group2
+          notebook_task:
+            notebook_path: notebooks/python/first_level_etl/ntb_bronze_ttabp
+            base_parameters:
+              dbx_env: ${var.environment}
+              data_load_group: group2
+              full_data_refresh: N
+              use_thread_pool_executor_yn: N
+            source: GIT
+          job_cluster_key: Job_wf_ttabp_bronze_load
+        - task_key: job_ttabp_bronze_load_group3
+          depends_on:
+            - task_key: job_ttabp_bronze_control_table_load_group3
+          notebook_task:
+            notebook_path: notebooks/python/first_level_etl/ntb_bronze_ttabp
+            base_parameters:
+              dbx_env: ${var.environment}
+              data_load_group: group3
+              full_data_refresh: N
+              use_thread_pool_executor_yn: N
+            source: GIT
+          job_cluster_key: Job_wf_ttabp_bronze_load
+        - task_key: job_ttabp_bronze_load_group4
+          depends_on:
+            - task_key: job_ttabp_bronze_control_table_load_group4
+          notebook_task:
+            notebook_path: notebooks/python/first_level_etl/ntb_bronze_ttabp
+            base_parameters:
+              dbx_env: ${var.environment}
+              data_load_group: group4
+              full_data_refresh: N
+              use_thread_pool_executor_yn: N
+            source: GIT
+          job_cluster_key: Job_wf_ttabp_bronze_load
+        - task_key: job_ttabp_bronze_load_group5
+          depends_on:
+            - task_key: job_ttabp_bronze_control_table_load_group5
+          notebook_task:
+            notebook_path: notebooks/python/first_level_etl/ntb_bronze_ttabp
+            base_parameters:
+              dbx_env: ${var.environment}
+              data_load_group: group5
+              full_data_refresh: N
+              use_thread_pool_executor_yn: N
+            source: GIT
+          job_cluster_key: Job_wf_ttabp_bronze_load
+        - task_key: job_ttabp_bronze_load_group7
+          depends_on:
+            - task_key: job_ttabp_bronze_control_table_load_group7
+          notebook_task:
+            notebook_path: notebooks/python/first_level_etl/ntb_bronze_ttabp
+            base_parameters:
+              dbx_env: ${var.environment}
+              data_load_group: group7
+              full_data_refresh: Y
+              use_thread_pool_executor_yn: N
+            source: GIT
+          job_cluster_key: Job_wf_ttabp_bronze_load
+      job_clusters:
+        - job_cluster_key: Job_wf_ttabp_bronze_load
+          new_cluster:
+            policy_id: ${var.policy_id}
+            cluster_name: ""
+            spark_version: ${var.runtime}
+            aws_attributes:
+              first_on_demand: 1
+              availability: SPOT_WITH_FALLBACK
+              zone_id: auto
+              instance_profile_arn: ${var.instance_profile_arn}
+              spot_bid_price_percent: 100
+            node_type_id: i4i.xlarge
+            custom_tags:
+              Environment: ${var.environment}
+              GroupName: Trademark
+              ComponentID: ${var.ComponentID}
+              team: product
+              Component: TMDC
+            cluster_log_conf:
+              s3:
+                destination: s3://bdr-databricks-app-${var.environment}/auditlogs-data/1025-213227-u87y9ym6
+                  (us-east-1)/0418-165403-fuscis8d (us-west-2)
+                region: us-west-2
+                enable_encryption: true
+                canned_acl: bucket-owner-full-control
+            enable_elastic_disk: true
+            data_security_mode: SINGLE_USER
+            runtime_engine: STANDARD
+            autoscale:
+              min_workers: 2
+              max_workers: 8
+      queue:
+        enabled: true
+      git_source:
+        git_url: https://prod-cicm.uspto.gov/gitlab/tm-tmdc/trm-reports-dpl.git
+        git_provider: gitLabEnterpriseEdition
+        git_branch: ${var.git_branch}
+      run_as:
+        service_principal_name: c0e8744c-4859-4397-b822-2f629cf629dc
+permissions:
+  - level: ${var.editor}
+    group_name: ${var.editorteam}
+  - level: ${var.reader}
+    group_name: ${var.readerteam}
+  - level: ${var.trademark}
+    group_name: ${var.trademarkteam}
+  - level: CAN_MANAGE
+    service_principal_name: c0e8744c-4859-4397-b822-2f629cf629dc
+ 

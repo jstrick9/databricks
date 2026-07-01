@@ -1,0 +1,93 @@
+resources:
+  jobs:
+    wf_trm_reports_tmog_metrics:
+      name: wf_trm_reports_tmog_metrics
+      description: |-
+        A workflow used to run the TMOG metrics data load.
+      email_notifications:
+        on_failure:
+          - ODBDDataLakeTeam@uspto.gov
+      schedule:
+        quartz_cron_expression: 0 0 10 * * ?
+        timezone_id: America/New_York
+        pause_status: UNPAUSED
+      tasks:
+        - task_key: job_trm_reporting_tmog_metrics_bronze_load
+          timeout_seconds: 3600
+          min_retry_interval_millis: 1800000
+          retry_on_timeout: true
+          notebook_task:
+            notebook_path: notebooks/python/first_level_etl/ntb_tmog_metrics_bronze_load
+            base_parameters:
+              dbx_env: ${var.environment}
+            source: GIT
+          job_cluster_key: trmreporting_tmog_metrics_cluster
+        - task_key: job_trm_reporting_tmog_metrics_silver_load
+          timeout_seconds: 1800
+          min_retry_interval_millis: 1800000
+          retry_on_timeout: true
+          depends_on:
+            - task_key: job_trm_reporting_tmog_metrics_bronze_load
+          notebook_task:
+            notebook_path: notebooks/python/second_level_etl/ntb_tmog_metrics_silver_load
+            base_parameters:
+              dbx_env: ${var.environment}
+            source: GIT
+          job_cluster_key: trmreporting_tmog_metrics_cluster
+        - task_key: job_trm_reporting_tmog_metrics_gold_load
+          timeout_seconds: 1800
+          min_retry_interval_millis: 1800000
+          retry_on_timeout: true
+          depends_on:
+            - task_key: job_trm_reporting_tmog_metrics_silver_load
+          notebook_task:
+            notebook_path: notebooks/python/third_level_etl/ntb_tmog_metrics_gold_load
+            base_parameters:
+              dbx_env: ${var.environment}
+            source: GIT
+          job_cluster_key: trmreporting_tmog_metrics_cluster
+      job_clusters:
+        - job_cluster_key: trmreporting_tmog_metrics_cluster
+          new_cluster:
+            policy_id: ${var.policy_id}
+            cluster_name: ""
+            spark_version: ${var.runtime}
+            aws_attributes:
+              first_on_demand: 1
+              availability: SPOT_WITH_FALLBACK
+              zone_id: auto
+              instance_profile_arn: ${var.instance_profile_arn}
+              spot_bid_price_percent: 100
+              ebs_volume_count: 0
+            node_type_id: i4i.large
+            custom_tags:
+              Environment: ${var.environment}
+              GroupName: Trademark
+              ComponentID: ${var.ComponentID}
+              Team: product
+              Component: TMDC
+              SubGroup: Trm-reports
+            enable_elastic_disk: false
+            data_security_mode: SINGLE_USER
+            runtime_engine: STANDARD
+            autoscale:
+              min_workers: 2
+              max_workers: 4
+      git_source:
+        git_url: https://prod-cicm.uspto.gov/gitlab/tm-tmdc/trm-reports-dpl.git
+        git_provider: gitLabEnterpriseEdition
+        git_branch: ${var.git_branch}
+      tags:
+        Environment: ${var.environment}
+        TRM Reporting: ""
+      queue:
+        enabled: true
+      run_as:
+        service_principal_name: c0e8744c-4859-4397-b822-2f629cf629dc
+permissions:
+  - level: ${var.editor}
+    group_name: ${var.editorteam}
+  - level: ${var.reader}
+    group_name: ${var.readerteam}
+  - level: CAN_MANAGE
+    service_principal_name: c0e8744c-4859-4397-b822-2f629cf629dc

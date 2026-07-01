@@ -1,0 +1,127 @@
+resources:
+  jobs:
+    wf_trmreports_first_level_etl_data_load:
+      name: wf_trmreports_first_level_etl_data_load
+      email_notifications:
+        on_success:
+          - ODBDDataLakeTeam@uspto.gov
+          - ODBDSystemsOps@uspto.gov
+        on_failure:
+          - ODBDDataLakeTeam@uspto.gov
+          - ODBDSystemsOps@uspto.gov
+      timeout_seconds: 7200
+      schedule:
+        quartz_cron_expression: 31 0 4 * * ?
+        timezone_id: America/New_York
+        pause_status: UNPAUSED
+      tasks:
+        - task_key: class_etl
+          notebook_task:
+            notebook_path: notebooks/python/first_level_etl/ntb_class_etl_code
+            base_parameters:
+              dbx_env: ${var.environment}
+              config_file: ../config/${var.environment}/trmreports-conf.yaml
+            source: GIT
+          job_cluster_key: job_wf_altx_dataload_cluster
+        - task_key: job_trmreports_oracle_gate_keeper
+          notebook_task:
+            notebook_path: notebooks/python/shared/ntb_oracle_gatekeeper
+            base_parameters:
+              dbx_env: ${var.environment}
+              config_file: ../config/${var.environment}/trmreports-conf.yaml
+            source: GIT
+          job_cluster_key: job_wf_altx_dataload_cluster
+          max_retries: 2
+          min_retry_interval_millis: 10800000
+        - task_key: ntb_bibliography_etl_code
+          depends_on:
+              - task_key: job_trmreports_oracle_gate_keeper
+          notebook_task:
+            notebook_path: notebooks/python/first_level_etl/ntb_bibliography_etl_code
+            base_parameters:
+              dbx_env: ${var.environment}
+              config_file: ../config/${var.environment}/trmreports-conf.yaml
+            source: GIT
+          job_cluster_key: job_wf_altx_dataload_cluster
+
+        - task_key: ntb_correspondence_etl_code
+          notebook_task:
+            notebook_path: notebooks/python/first_level_etl/ntb_correspondence_etl_code
+            base_parameters:
+              dbx_env: ${var.environment}
+              config_file: ../config/${var.environment}/trmreports-conf.yaml
+            source: GIT
+          job_cluster_key: job_wf_altx_dataload_cluster
+        - task_key: ntb_fpep_fact_etl
+          notebook_task:
+            notebook_path: notebooks/python/first_level_etl/ntb_fpep_fact_etl
+            base_parameters:
+              dbx_env: ${var.environment}
+              config_file: ../config/${var.environment}/trmreports-conf.yaml
+            source: GIT
+          job_cluster_key: job_wf_altx_dataload_cluster
+        - task_key: ntb_milestone_etl_code
+          notebook_task:
+            notebook_path: notebooks/python/first_level_etl/ntb_milestone_etl_code
+            base_parameters:
+              dbx_env: ${var.environment}
+              config_file: ../config/${var.environment}/trmreports-conf.yaml
+            source: GIT
+          job_cluster_key: job_wf_altx_dataload_cluster
+        - task_key: ntb_owner_etl_code
+          notebook_task:
+            notebook_path: notebooks/python/first_level_etl/ntb_owner_etl_code
+            base_parameters:
+              dbx_env: ${var.environment}
+              config_file: ../config/${var.environment}/trmreports-conf.yaml
+            source: GIT
+          job_cluster_key: job_wf_altx_dataload_cluster
+        - task_key: ntb_prosecution_history_etl
+          notebook_task:
+            notebook_path: notebooks/python/first_level_etl/ntb_prosecution_history_etl
+            base_parameters:
+              dbx_env: ${var.environment}
+              config_file: ../config/${var.environment}/trmreports-conf.yaml
+            source: GIT
+          job_cluster_key: job_wf_altx_dataload_cluster
+      job_clusters:
+        - job_cluster_key: job_wf_altx_dataload_cluster
+          new_cluster:
+            policy_id: ${var.policy_id}
+            cluster_name: ""
+            spark_version: ${var.runtime}
+            aws_attributes:
+              first_on_demand: 1
+              availability: SPOT_WITH_FALLBACK
+              zone_id: auto
+              instance_profile_arn: ${var.instance_profile_arn}
+              spot_bid_price_percent: 100
+            node_type_id: i4i.xlarge
+            custom_tags:
+              Environment: ${var.environment}
+              GroupName: Trademark
+              ComponentID: ${var.ComponentID}
+              Team: product
+              Component: TMDC
+              SubGroup: Trm-reports
+            enable_elastic_disk: true
+            data_security_mode: SINGLE_USER
+            runtime_engine: STANDARD
+            autoscale:
+              min_workers: 2
+              max_workers: 8
+      git_source:
+        git_url: https://prod-cicm.uspto.gov/gitlab/tm-tmdc/trm-reports-dpl.git
+        git_provider: gitLabEnterpriseEdition
+        git_branch: ${var.git_branch}
+      run_as:
+        service_principal_name: c0e8744c-4859-4397-b822-2f629cf629dc
+permissions:
+  - level: ${var.editor}
+    group_name: ${var.editorteam}
+  - level: ${var.reader}
+    group_name: ${var.readerteam}
+  - level: ${var.trademark}
+    group_name: ${var.trademarkteam}
+  - level: CAN_MANAGE
+    service_principal_name: c0e8744c-4859-4397-b822-2f629cf629dc
