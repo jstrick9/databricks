@@ -1,0 +1,109 @@
+bundle:
+  name: "trm-reports-dpl-bundle"
+
+include:
+  - jobs/*/*.yml
+  #- resources/*.yml
+
+variables:
+  environment:
+    description: "Environment Variable"
+    default: dev
+  Component:
+    description: "Project"
+    default: TMDC 
+  ComponentID:  
+    description: "ProjectID"
+    default: COMP-1627
+  instance_profile_arn:
+    description: "AWS instance profile"
+    default: "arn:aws:iam::640272543913:instance-profile/uspto-dev/uacs-lab-instance-role-1"
+  git_branch:
+    description: "Git branch"
+    default: lab  
+  editor:  
+    description: "Workflow editor"
+    default: CAN_MANAGE
+  reader:  
+    description: "Workflow reader"
+    default: CAN_VIEW
+  editorteam:  
+    description: "Workflow access group1"
+    default: grp-eds-bdr-trademark-dbx-developers
+  readerteam:  
+    description: "Workflow access group2"
+    default: grp-eds-bdr-testing-team   
+  trademark:
+    description: "Trademark team editors"
+    default: CAN_VIEW
+  trademarkteam:
+    description: "Workflow access to trademark team"
+    default: eds-bdr-trademark-dbx-govt-manage-team
+  id:
+    description: "Webhook id for odp"
+    default: "ab244a0c-fdf4-4445-ad23-46f937beec58"
+  keepOn_value:
+    description: "Keepon tag for databricks instances"
+    default: "Mo+Tu+We+Th+Fr+Sa+Su:06-18/Federal_Holiday_ON"
+  policy_id:
+    description: "Include libraries for wf's"
+    default: 0019B9D71C8D94C9
+  runtime:
+    description: "Databricks Runtime version"
+    default: 15.4.x-scala2.12 
+  reporting_catalog:
+    description: "Catalog"
+    default: trm_reporting_dev
+    
+targets:
+  lab:
+    mode: development
+    default: true
+    workspace:
+      host: "https://lake-tmdc.etc.uspto.gov/"
+      root_path: "/Workspace/Users/c0e8744c-4859-4397-b822-2f629cf629dc/.bundle/${bundle.name}/${bundle.target}"
+    variables:
+      environment: dev
+      reporting_catalog: trm_reporting_dev
+      Component: TMDC
+      ComponentID: COMP-1627
+      instance_profile_arn: "arn:aws:iam::640272543913:instance-profile/uspto-dev/uacs-lab-instance-role-1"
+      git_branch: lab
+      editor: CAN_MANAGE
+      editorteam: grp-eds-bdr-trademark-dbx-developers
+      reader: CAN_VIEW
+      readerteam: grp-eds-bdr-testing-team
+      trademark: CAN_MANAGE
+      trademarkteam: eds-bdr-trademark-dbx-govt-manage-team    
+      id: "ab244a0c-fdf4-4445-ad23-46f937beec58"
+      keepOn_value: "Mo+Tu+We+Th+Fr+Sa+Su:06-18/Federal_Holiday_ON"
+      policy_id: 0019B9D71C8D94C9
+      runtime: 16.4.x-scala2.12
+    permissions:
+      - level: CAN_MANAGE
+        user_name: Chiranjeevi.Gajula@uspto.gov
+      - level: CAN_MANAGE
+        user_name: Ravi.Koppula1@USPTO.GOV
+  prod:
+    mode: production
+    default: false
+    workspace:
+      host: "https://lake-tmdc-p.uspto.gov/"
+      root_path: "/Workspace/Users/c0e8744c-4859-4397-b822-2f629cf629dc/.bundle/${bundle.name}/${bundle.target}"
+    variables:
+      environment: prod
+      reporting_catalog: trm_reporting
+      Component: TMDC
+      ComponentID: COMP-1627
+      instance_profile_arn: "arn:aws:iam::232576824973:instance-profile/uspto-dev/uacs-prod-instance-role-1"
+      git_branch: master
+      editor: CAN_VIEW
+      editorteam: grp-eds-bdr-testing-team
+      reader: CAN_VIEW
+      readerteam: grp-eds-bdr-trademark-dbx-developers
+      trademark: CAN_MANAGE
+      trademarkteam: eds-bdr-trademark-dbx-govt-manage-team
+      id: "e5229241-17a2-4935-8626-0e0db3b81fc7"
+      keepOn_value: "Mo+Tu+We+Th+Fr+Sa+Su:00-23/Federal_Holiday_ON"
+      policy_id: 0019EA8E5EC283D1
+      runtime: 16.4.x-scala2.12
