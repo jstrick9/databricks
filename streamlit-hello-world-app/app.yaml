@@ -1,0 +1,23 @@
+env:
+  - name: DATABRICKS_WAREHOUSE_ID
+    valueFrom: sql_warehouse
+  - name: DATABRICKS_WAREHOUSE_NAME
+    value: "Serverless Starter Warehouse"
+
+resources:
+  - name: sql_warehouse
+    sql_warehouse:
+      id: "8be1ba994477ec9a"
+      permission: CAN_USE
+
+# env:
+  # - name: DATABRICKS_WAREHOUSE_NAME
+   #  value: "Serverless Starter Warehouse"
+   #- name: DATABRICKS_TOKEN
+  #   value: "dapi186a8d3476c4b2819b5caf713a58b8d8"
+   #- name: DATABRICKS_HOST
+   #  value: "lake-tmdc.cloud.databricks.com"
+  # - name: DATABRICKS_HTTP_PATH
+    # value: "/sql/1.0/warehouses/5dd4991808215094"
+
+

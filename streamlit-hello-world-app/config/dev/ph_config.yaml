@@ -1,0 +1,9 @@
+schema:
+  catalog: "trm_reporting"
+  schema: "silver"
+  table: "prosecution_history"
+
+app:
+  title: "PH Action Code Search"
+  env: "dev"
+  default_limit: 10000
