@@ -1,0 +1,128 @@
+schema:
+    reporting_catalog: 'trm_reporting'
+    self_service_catalog: 'trademark_db' 
+    altrx_catalog: 'hive_metastore' 
+    altrx_schema: 'alteryx_etldb'
+    trgt_catalog: 'trm_reporting'
+    data_quality_catalog: 'data_quality' 
+    tmngpdb_src_catalog: 'trm_tmngpdb' 
+    tmintltm_src_catalog: 'trm_tmintltm' 
+    tmproceeding_catalog: 'trm_tmproceeding'
+    tmngfpepp_catalog: 'trm_tmngfpepp'
+    tmprodvty_catalog: 'trm_tmprodvty'
+    tmworker_catalog: 'trm_tmworker'
+    trm_jbteasps_src_catalog: 'trm_jbteasps'
+    alteryx_etldb_catalog: 'hive_metastore.alteryx_etldb'
+    tqr_catalog: 'tqr'
+    tmdecisions_catalog: 'tmdecisions'
+    trm_reporting_catalog: 'trm_reporting'
+    trm_tmbuscalendar_catalog: 'trm_tmbuscalendar'
+    trm_tmworker_catalog: 'trm_tmworker'
+    tmngidmp_catalog: 'trm_tmngidmp'
+    tm_practitioner_catalog: 'tm_practitioner'
+    src_db_name: 'TTABP'
+    lom_catalog: 'lom'
+    tept_catalog: 'tept'
+    myuspto_catalog: 'myuspto'
+secrets:
+    trm_scope: 'oracle_trm_server'
+    edw_scope: 'trm_edw_secret'
+    tableau_scope: 'tableau_secret'
+    ttab_scope: 'ttab_secret'
+    trmrp_scope: 'trmrp_secrete'
+    cx_survey_scope: 'cx_survey_secret'
+    jbteasps_scope: 'oracle_jbteasps_server'
+    ttab_ttabp_scope: 'ttab_secret_ttabp'
+    madrid_scope: 'trm_orc_madrid_scope'
+data_quality:
+    receiver_email: 'ODBDDataLakeTeam@uspto.gov'
+    brz_allowed_variance: '0' 
+alerting:
+    630_638_overdue:
+        email: "james.nosal@uspto.gov, cristiana.schwab@uspto.gov, jessica.ludeman@uspto.gov"
+    annual_workload_tables:
+        email: "trademark_analytics@USPTO.GOV"
+        cc: "Andrew.McPherson@uspto.gov, benjamin.fielstra@uspto.gov, ashish.acharya@uspto.gov"
+    Attorney_Outlier_Growth:
+        email: "David.Mayer@uspto.gov"
+        cc: "Jayanth.Bandi@uspto.gov"
+    currently_processing_first_actions_with_controls:
+        email: "Dan.Vavonese@USPTO.GOV,Nabil.Chbouki@USPTO.GOV,Steven.Schatz@USPTO.GOV"
+        cc: "Debra.Harris@USPTO.GOV,Corrinne.Callins@uspto.gov,TMwebsite@uspto.gov,trademark_analytics@USPTO.GOV,benjamin.fielstra@uspto.gov"
+    efy_ap116_renewal_report:
+        email: "trademark_planning@uspto.gov"
+    email_cx_survey:
+        email: "jayanth.bandi@uspto.gov,james.nosal@uspto.gov"
+    fee_discrepancy:
+        email: "Trademark_Analytics@uspto.gov, Christine.Cooper@USPTO.GOV"
+        cc: "robert.morris@uspto.gov"
+    fee_issue_alert:
+        email: "Andrew.McDonald@USPTO.GOV"
+    first_action_report_v1:
+        email: "joshua.strickland@uspto.gov, jayanth.bandi@uspto.gov, Sharmi.Dasgupta@uspto.gov, Sahar.Ahmed@uspto.gov, james.nosal@uspto.gov"
+    goods_and_services_classification:
+        email: "Monique.Choiniere@USPTO.GOV,David.Tooley@USPTO.GOV,Bernice.Middleton@USPTO.GOV"
+        cc: "Trademark_Analytics@uspto.gov,Nabil.Chbouki@USPTO.GOV,benjamin.fielstra@uspto.gov"
+    goods_and_services_report:
+        email: "joshua.strickland@uspto.gov"
+    individual_examiner:
+        email: "Jayanth.Bandi@uspto.gov, ashish.acharya@uspto.gov, Trademark_Analytics@uspto.gov"
+    kingpin_status_alert:
+        email: "ashish.acharya@uspto.gov,hang.tran@uspto.gov,Stephen.Aquila@USPTO.GOV,Matthew.Schwab@USPTO.GOV"        
+    madrid_tranformation_and_replacement:
+        email: "jayanth.bandi@uspto.gov,lashawn.cave@uspto.gov,michael.mcmillan@uspto.gov,crystal.hlywa@uspto.gov,kelly.choe@uspto.gov,cameron.carter1@uspto.gov,shiwoo.park@uspto.gov"
+    myuspto_account_monitor:
+        email: "benjamin.fielstra@uspto.gov"
+        cc: "benjamin.fielstra@uspto.gov"
+    new_fee_cd:
+        email: "Trademark_Analytics@uspto.gov"
+    noa_report:
+        email: "Sahar.Ahmed@uspto.gov,Sharmi.Dasgupta@uspto.gov"
+        cc: "ashish.acharya@uspto.gov, james.nosal@uspto.gov"
+    og_issue_registrations:
+        email: "Trademark_Analytics@uspto.gov"
+    preexam_fee_checker:
+        email: "Tameaka.Smith@USPTO.GOV,Lashawn.Cave@uspto.gov,Jessica.Ludeman@USPTO.GOV,Cristiana.Schwab@USPTO.GOV,Terry.Hooper@USPTO.GOV,Katherine.Westermann@uspto.gov"
+        cc: "Dan.Vavonese@USPTO.GOV,Michael.gaafar@USPTO.GOV,Hang.Tran@USPTO.GOV,Pamela.Coghill@USPTO.GOV,trademark_analytics@uspto.gov,David.Mayer@USPTO.GOV,Nabil.Chbouki@USPTO.GOV,Darrin.Bentley@uspto.gov,ashish.acharya@uspto.gov"
+    prima_fascia:
+        email: "Jayanth.Bandi@uspto.gov,Lizbeth.Kulick@USPTO.GOV,Elizabeth.Beyer@USPTO.GOV"
+    pull_metrics_on_failure:
+        email: "Jayanth.Bandi@uspto.gov, ashish.acharya@uspto.gov, Trademark_Analytics@uspto.gov"
+    sec_8_and_15_partial_acceptance:
+        email: "terry.howard@uspto.gov,Nancy.Kamei@uspto.gov"
+        cc: "james.nosal@uspto.gov,jayanth.bandi@uspto.gov"
+    sec8_partial_acceptance:
+        email: "terry.howard@uspto.gov,Nancy.Kamei@uspto.gov"
+        cc: "james.nosal@uspto.gov,jayanth.bandi@uspto.gov"
+    sn_status_count:
+        email: "brett.deorio@uspto.gov, james.nosal@uspto.gov, sharmi.dasgupta@uspto.gov, renee.adonteng@uspto.gov, sahar.ahmed@uspto.gov"
+        cc: "jayanth.bandi@uspto.gov"
+    sn_status_nohold:
+        email: "patrick.washington@USPTO.GOV, sharmi.dasgupta@uspto.gov, sahar.ahmed@uspto.gov"
+    tm_case_category_counts:
+        email: "jayanth.bandi@uspto.gov,Matthew.Kim1@USPTO.GOV, Patrick.Washington@USPTO.GOV, Sharmi.Dasgupta@uspto.gov, Tom.Klieber@USPTO.GOV, Sahar.Ahmed@uspto.gov,Kristin.Thompson@uspto.gov"
+    tm_expired_registration:
+        email: "Aswin.Palicherla@USPTO.GOV, Brian.O'Donnell@USPTO.GOV, eOG@USPTO.GOV, Eskendir.Mulugeta@uspto.gov, Isabel.Manalo1@USPTO.GOV, omega.lewis1@USPTO.GOV, Yu.Lin@USPTO.GOV,jayanth.bandi@uspto.gov"
+    tm_fee_code_daily:
+        email: "Tomas.Vlcek@USPTO.GOV, Christine.Cooper@USPTO.GOV"
+        cc: "james.nosal@uspto.gov, jayanth.bandi@uspto.gov"
+    tmintl_auto_project:
+        email: "Crystal.Hlywa@USPTO.GOV, Matthew.Kim1@USPTO.GOV,Debra.Lee@uspto.gov,TMMadridLiaisonConsult@uspto.gov,james.nosal@uspto.gov"
+        cc: "jayanth.bandi@uspto.gov"
+    tqr_email_alert:
+        email: "tom.klieber@uspto.gov"
+    tranen_tanex:
+        email: "crystal.hlywa@uspto.gov, Debra.lee@uspto.gov ,lashawn.cave@uspto.gov ,kelly.choe@uspto.gov"
+        cc: "Matthew.Kim1@uspto.gov, Jessica.ludeman@uspto.gov, jayanth.bandi@uspto.gov, james.nosal@uspto.gov"
+    TTAB_Opposition_Response_Report:
+        email: "shiwoo.park@uspto.gov,Cameron.Carter1@uspto.gov,crystal.hlywa@uspto.gov,Jeremy.joy@uspto.gov,ellen.yowell@uspto.gov,thomas.wellington@uspto.gov,Stacey.Hatfield@USPTO.GOV,Trademark_Analytics@USPTO.GOV, TM-Int-Team1@uspto.gov"
+        cc: "james.nosal@uspto.gov"
+    unpaid_fee_alert:
+        email: "Steven.Berk@USPTO.GOV,Dan.Vavonese@USPTO.GOV,Nabil.Chbouki@USPTO.GOV,Christine.Cooper@USPTO.GOV,james.nosal@uspto.gov,jayanth.bandi@uspto.gov"
+    Update_OG_Case_Count:
+        email: "Leslie.Bishop@uspto.gov"
+        cc: "Jayanth.Bandi@uspto.gov"
+endpoints:
+    cx_survey_api_endpoint: "https://gov1.qualtrics.com/automations-file-service/automations/{}/files"
+cdc:
+    cdc_bucket: 'databricks-prod-tmdc'

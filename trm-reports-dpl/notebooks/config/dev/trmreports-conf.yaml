@@ -1,0 +1,128 @@
+schema:
+    reporting_catalog: 'trm_reporting_dev'
+    self_service_catalog: 'trademark_db_dev' 
+    altrx_catalog: 'hive_metastore' 
+    altrx_schema: 'alteryx_etldb_dev'
+    trgt_catalog: 'trm_reporting_dev'
+    data_quality_catalog: 'data_quality_dev' 
+    tmngpdb_src_catalog: 'trm_tmngpdb_dev'
+    tmintltm_src_catalog: 'trm_tmintltm_dev' 
+    tmproceeding_catalog: 'trm_tmproceeding_dev'
+    tmngfpepp_catalog: 'trm_tmngfpepp_dev'
+    tmprodvty_catalog: 'trm_tmprodvty_dev'
+    tmworker_catalog: 'trm_tmworker_dev'
+    trm_jbteasps_src_catalog: 'trm_jbteasps_dev'
+    alteryx_etldb_catalog: 'hive_metastore.alteryx_etldb_dev'
+    tqr_catalog: 'tqr_dev'
+    tmdecisions_catalog: 'dev_tmdecisions'
+    trm_reporting_catalog: 'trm_reporting_dev'
+    trm_tmbuscalendar_catalog: 'trm_tmbuscalendar_dev'
+    trm_tmworker_catalog: 'trm_tmworker_dev'
+    tmngidmp_catalog: 'trm_tmngidmpvt_dev'
+    tm_practitioner_catalog: 'tm_practitioner_dev'
+    src_db_name: 'TTABD'
+    lom_catalog: 'lom_dev'
+    tept_catalog: 'tept_dev'
+    myuspto_catalog: 'myuspto_dev'
+secrets:
+    trm_scope: 'oracle_trm_server'
+    edw_scope: 'trm_edw_secret' 
+    tableau_scope: 'tableau_secret'
+    ttab_scope: 'ttab_secrete'
+    trmrp_scope: 'trmrp_secrete'
+    cx_survey_scope: 'cx_survey_secret'
+    jbteasps_scope: 'oracle_jbteasps_server'
+    ttab_ttabp_scope: 'ttab_secret_ttabp'
+    madrid_scope: 'trm_orc_madrid_scope'
+data_quality:
+    receiver_email: 'jayanth.bandi@uspto.gov, joshua.strickland@uspto.gov'
+    brz_allowed_variance: '0'
+alerting:
+    630_638_overdue:
+        email: "jayanth.bandi@uspto.gov"
+    annual_workload_tables:
+        email: ""
+        cc: "Andrew.McPherson@uspto.gov, benjamin.fielstra@uspto.gov, ashish.acharya@uspto.gov"
+    Attorney_Outlier_Growth:
+        email: "jayanth.bandi@uspto.gov"
+        cc: "benjamin.fielstra@uspto.gov"
+    currently_processing_first_actions_with_controls:
+        email: "benjamin.fielstra@uspto.gov"
+        cc: "benjamin.fielstra@uspto.gov"
+    efy_ap116_renewal_report:
+        email: "joshua.strickland@uspto.gov"
+    email_cx_survey:
+        email: "jayanth.bandi@uspto.gov"
+    fee_discrepancy:
+        email: "jayanth.bandi@uspto.gov, Christine.Cooper@USPTO.GOV"
+        cc: "jayanth.bandi@uspto.gov"
+    fee_issue_alert:
+        email: "benjamin.fielstra@uspto.gov,david.smith4@uspto.gov"
+    first_action_report_v1:
+        email: "joshua.strickland@uspto.gov, jayanth.bandi@uspto.gov, andrew.mcpherson@uspto.gov"
+    goods_and_services_classification:
+        email: "benjamin.fielstra@uspto.gov"
+        cc: "benjamin.fielstra@uspto.gov"
+    goods_and_services_report:
+        email: "joshua.strickland@uspto.gov"
+    individual_examiner:
+        email: "ashish.acharya@uspto.gov, Jayanth.Bandi@uspto.gov"
+    kingpin_status_alert:
+        email: "ashish.acharya@uspto.gov"
+    madrid_tranformation_and_replacement:
+        email: "jayanth.bandi@uspto.gov"
+    myuspto_account_monitor:
+        email: "benjamin.fielstra@uspto.gov"
+        cc: "benjamin.fielstra@uspto.gov"
+    new_fee_cd:
+        email: "jayanth.bandi@uspto.gov"
+    noa_report:
+        email: "Ashish.Acharya@uspto.gov,jayanth.bandi@uspto.gov"
+        cc: "jayanth.bandi@uspto.gov"
+    og_issue_registrations:
+        email: "jayanth.bandi@uspto.gov"
+    preexam_fee_checker:
+        email: "benjamin.fielstra@uspto.gov"
+        cc: "benjamin.fielstra@uspto.gov"
+    prima_fascia:
+        email: "Jayanth.Bandi@uspto.gov"
+    pull_metrics_on_failure:
+        email: "ashish.acharya@uspto.gov, Jayanth.Bandi@uspto.gov"
+    sec_8_and_15_partial_acceptance:
+        email: "jayanth.bandi@uspto.gov"
+        cc: "jayanth.bandi@uspto.gov"
+    sec8_partial_acceptance:
+        email: "jayanth.bandi@uspto.gov"
+        cc: "jayanth.bandi@uspto.govv"
+    sn_status_count:
+        email: "jayanth.bandi@uspto.gov"
+        cc: "jayanth.bandi@uspto.gov"
+    sn_status_nohold:
+        email: "jayanth.bandi@uspto.gov"
+    tm_expired_registration:
+        email: "jayanth.bandi@uspto.gov"
+    tmintl_auto_project:
+        email: "jayanth.bandi@uspto.gov"
+        cc: "jayanth.bandi@uspto.gov"
+    tqr_email_alert:
+        email: "jayanth.bandi@uspto.gov"
+    tm_case_category_counts:
+        email: "jayanth.bandi@uspto.gov"
+    tm_fee_code_daily:
+        email: "jayanth.bandi@uspto.gov, christine.cooper@uspto.gov"
+        cc: "jayanth.bandi@uspto.gov"
+    tranen_tanex:
+        email: "jayanth.bandi@uspto.gov"
+        cc: "Joshua.Strickland@uspto.gov, jayanth.bandi@uspto.gov"
+    TTAB_Opposition_Response_Report:
+        email: "jayanth.bandi@uspto.gov"
+        cc: "benjamin.fielstra@uspto.gov"
+    unpaid_fee_alert:
+        email: "jayanth.bandi@uspto.gov"
+    Update_OG_Case_Count:
+        email: "jayanth.bandi@uspto.gov,ashish.acharya@uspto.gov"
+        cc: "benjamin.fielstra@uspto.gov"
+endpoints:
+    cx_survey_api_endpoint: "https://gov1.qualtrics.com/automations-file-service/automations/{}/files"
+cdc:
+    cdc_bucket: 'databricks-lab-tmdc'
