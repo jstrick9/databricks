@@ -1,0 +1,2 @@
+-- Databricks notebook source
+REFRESH MATERIALIZED VIEW trm_reporting.tableau.tr25_applications_filed_by_state_country_mvw 

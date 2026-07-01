@@ -1,0 +1,77 @@
+- name: login_user
+  mode:
+    mode_type: merge
+    merge_condition:
+    - fk_interested_party_id
+  columns:
+    fk_interested_party_id: long
+    email_comnctn_id: string
+    email_comnctn_ts: timestamp
+    user_account_nm: string
+    uspto_terms_cond_acptnc_in: string
+    uspto_terms_cond_acptnc_dt: date
+    last_login_ts: timestamp
+    create_ts: timestamp
+    create_user_id: long
+    last_mod_ts: timestamp
+    last_mod_user_id: long
+    lock_control_no: long
+    efs_web_user_in: string
+    account_activated_in: string
+  filter_column: last_mod_ts
+- name: attorney_bar
+  mode:
+    mode_type: merge
+    merge_condition:
+    - attorney_bar_id
+  columns:
+    attorney_bar_id: long
+    fk_interested_party_id: long
+    attorney_bar_no: string
+    geo_region_id: long
+    bar_number_assc_dt: date
+    certify_in: string
+    create_ts: timestamp
+    create_user_id: long
+    last_mod_ts: timestamp
+    last_mod_user_id: long
+    lock_control_no: long
+    atty_bar_mbrshp_yr_no: integer
+  filter_column: last_mod_ts
+- name: activity_log
+  mode:
+    mode_type: overwrite
+    merge_condition:
+    - activity_log_id
+  columns:
+    activity_log_id: long
+    fk_interested_party_id: long
+    fk_helpdesk_user_id: long
+    activity_desc_tx: string
+    fk_activity_cd: string
+    mod_user_ip_address_tx: string
+    activity_ts: timestamp
+    fk_activity_status_cd: string
+  filter_column: activity_ts
+- name: interested_party
+  mode:
+    mode_type: merge
+    merge_condition:
+    - interested_party_id
+  columns:
+    interested_party_id: long
+    cfk_patron_id: string
+    fk_legal_entity_type_cd: string
+    interested_party_ct: string
+    preferred_contact_ct: string
+    primary_country_id: long
+    legal_statement_tx: string
+    begin_effective_dt: date
+    end_effective_dt: date
+    create_ts: timestamp
+    create_user_id: long
+    last_mod_ts: timestamp
+    last_mod_user_id: long
+    lock_control_no: long
+    cfk_external_id: string
+  filter_column: last_mod_ts

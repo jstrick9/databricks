@@ -1,0 +1,2 @@
+-- Databricks notebook source
+REFRESH MATERIALIZED VIEW trm_reporting.tableau.cm115_total_inventory_report_by_location_code_mvw

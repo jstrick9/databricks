@@ -1,0 +1,2 @@
+-- Databricks notebook source
+REFRESH MATERIALIZED VIEW trm_reporting.tableau.cm157_error_cases_bounced_from_photcomp_mvw
