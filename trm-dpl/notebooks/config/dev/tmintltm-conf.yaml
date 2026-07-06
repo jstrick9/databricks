@@ -1,0 +1,24 @@
+schema:
+    trgt_catalog: 'trm_tmintltm_dev'
+    data_quality_catalog: 'data_quality_dev' 
+    src_db_name: 'tmintltm' 
+    dataload_dt: '2017-01-01 00:00:00'
+    foreign_oracle_catalog: "foreign_trm_dev"
+cdc:
+    src_csv_files: 's3a://databricks-lab-tmdc/eds/DMS/TMINTLTM'
+    src_database: 'tmintltm'
+    cdc_bucket: 'databricks-lab-tmdc'
+    cdc_folder: 'eds/DMS/cdc/trm/tmintltm'
+    transformed_cdc_folder: 'eds/DMS/cdc/trm/tmintltm/transformed_cdc'
+    finished_cdc_folder: 'eds/DMS/cdc/trm/tmintltm/finished_cdc'
+secrets:
+    trm_scope: 'oracle_trm_server'    
+data_quality:
+    receiver_email: 'pawanpreet.sangari@uspto.gov'
+    brz_allowed_variance: '10.0'   
+DMS:
+    replication_instance: 'dbx-dev-orc-mig-s3'
+    source_endpoint: 'pvt-tmng-db'
+    target_endpoint: 'dms-tmintltm'
+    delta_load_task_name: 'trm-tmintltm-delta-load'
+    full_load_task_name: 'trm-tmintltm-full-load'

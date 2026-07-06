@@ -1,0 +1,30 @@
+schema:
+    trgt_catalog: 'trm_tmngpdb_dev'
+    data_quality_catalog: 'data_quality_dev' 
+    src_db_name: 'tmngpvtdb' 
+    bdx_api: 'http://bdr-bdx-wildfly-1.test.uspto.gov:8080/bdr-bdx-dpl/startBdxDailyJob/Daily_tmappl_Xml?jobDate='
+    s3_path: "s3://odp-dev-dh-web/bulk-data/files/TRTDXFAP"
+    historical_file_batch_size: "30000"
+    working_temp_directory: "dbfs:/mnt/databricks-lab-tmdc/TRTDXFAP"
+    s3_action_key_business_event_table_path: "s3://databricks-lab-tmdc/trademark_application/action_key_business_event_table/Table_BDX_Action_Key_TM_Business_Event.xlsx"
+    foreign_oracle_catalog: "foreign_trm_dev"
+cdc:
+    src_database: 'tmngpvtdb'
+    cdc_bucket: 'databricks-lab-tmdc'
+    src_csv_files: 's3a://databricks-lab-tmdc/eds/DMS/TMNGPDB'
+    cdc_folder: 'cdc'
+secrets:
+    trm_scope: 'oracle_trm_server'
+    ptas_scope: 'orc_ptas_secret'   
+    part1_trm_scope: 'oracle_trm_server'   
+data_quality:
+    receiver_email: ''
+    tmapplser_quality_email_list: 'pisrael.alafe@uspto.gov,srinadh.guduru@uspto.gov,prasad.yellanki@uspto.gov'
+    brz_allowed_variance: '10.0' 
+DMS:
+    groups: 12
+    replication_instance: 'dbx-dev-orc-mig-s3'
+    source_endpoint: 'pvt-tmng-db'
+    target_endpoint: 'dms-tmngpdb'
+    initial_load_task_name: 'trm-tmngpvtdb-initial-load'
+    full_load_task_name: 'trm-tmngpvtdb-full-load'

@@ -1,0 +1,16 @@
+schema:
+    trgt_catalog: 'trm_efoiap_dev'
+    data_quality_catalog: 'data_quality_dev' 
+    src_db_name: 'EFOIAPVT' 
+cdc:
+    src_csv_files: 's3a://databricks-lab-tmdc/eds/DMS/EFOIAPVT'
+    src_database: 'efoiap'
+    cdc_bucket: 'databricks-lab-tmdc'
+    cdc_folder: '/eds/DMS/cdc/trm/trm_efoiap'
+    transformed_cdc_folder: '/eds/DMS/cdc/trm/trm_efoiap/transformed'
+    finished_cdc_folder: '/eds/DMS/cdc/trm/trm_efoiap/finished'
+secrets:
+    trm_scope: 'oracle_trm_server'       
+data_quality:
+    receiver_email: 'ravi.koppula1@uspto.gov'
+    brz_allowed_variance: '2.0'      

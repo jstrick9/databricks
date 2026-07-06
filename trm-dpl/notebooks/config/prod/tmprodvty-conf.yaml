@@ -1,0 +1,17 @@
+schema:
+    trgt_catalog: 'trm_tmprodvty'
+    data_quality_catalog: 'data_quality' 
+    src_db_name: 'TMPRODVTY' 
+cdc:
+    src_csv_files: 's3a://databricks-prod-tmdc/eds/DMS/TMPRODVTY'
+    src_database: 'tmprodvty'
+    cdc_bucket: 'databricks-prod-tmdc'
+    cdc_folder: 'eds/DMS/cdc/trm/tmprodvty'
+    transformed_cdc_folder: 'eds/DMS/cdc/trm/tmprodvty/transformed'
+    finished_cdc_folder: 'eds/DMS/cdc/trm/tmprodvty/finished'
+secrets:
+    trm_scope: 'oracle_trm_server'    
+data_quality:
+    receiver_email: 'ODBDDataLakeTeam@uspto.gov'
+    brz_allowed_variance: '2.0'   
+    
