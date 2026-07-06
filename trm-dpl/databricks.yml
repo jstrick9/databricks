@@ -1,0 +1,134 @@
+bundle:
+  name: "trm-dpl"
+
+include:
+  - jobs/*/*.yml
+  #- resources/*.yml
+
+sync:
+  include:
+    - "notebooks/**"
+
+variables:
+  environment:
+    description: "Environment Variable"
+    default: dev
+  Component:
+    description: "Project"
+    default: TMDC 
+  ComponentID:  
+    description: "ProjectID"
+    default: COMP-1627
+  instance_profile_arn:
+    description: "AWS instance profile"
+    default: "arn:aws:iam::640272543913:instance-profile/uspto-dev/uacs-lab-instance-role-1"
+  git_branch:
+    description: "Git branch"
+    default: lab  
+  editor:  
+    description: "Workflow editor"
+    default: CAN_MANAGE
+  reader:  
+    description: "Workflow reader"
+    default: CAN_VIEW
+  editorteam:  
+    description: "Workflow access group1"
+    default: grp-eds-bdr-trademark-dbx-developers
+  readerteam:  
+    description: "Workflow access group2"
+    default: grp-eds-bdr-testing-team   
+  id:
+    description: "Webhook id for odp"
+    default: "ab244a0c-fdf4-4445-ad23-46f937beec58"
+  keepOn_value:
+    description: "Keepon tag for databricks instances"
+    default: "Mo+Tu+We+Th+Fr+Sa+Su:06-18/Federal_Holiday_ON"
+  policy_id:
+    description: "Include libraries for wf's"
+    default: 00192D7A37423518
+  runtime:
+    description: "Databricks Runtime version"
+    default: 15.4.x-scala2.12
+  pause_status:
+    description: "Workflow Status"
+  trm_tmprodvty_catalog:
+    description: "Unity Catalog for tmprodvty"
+    default: "trm_tmprodvty"
+  cdc_bucket:
+    description: "AWS s3 cdc bucket"
+    default: "databricks-prod-tmdc"
+  tmngpdb_catalog:
+    description: "trm_tmngpdb catalog name"
+    default: trm_tmngpdb_dev
+  tmproceeding_catalog:
+    description: "tmproceeding catalog name"
+    default: trm_tmproceeding
+  tmreviews_catalog:
+    description: "tmreviews catalog"
+    default: trm_tmreviews_dev
+  tmworker_catalog:
+    description: "tmworker catalog"
+    default: trm_tmworker_dev
+    
+targets:
+  lab:
+    mode: development
+    default: true
+    workspace:
+      host: "https://lake-tmdc.etc.uspto.gov/"
+      root_path: "/Workspace/Users/c0e8744c-4859-4397-b822-2f629cf629dc/.bundle/${bundle.name}/${bundle.target}"
+    variables:
+      environment: dev
+      tmngpdb_catalog: trm_tmngpdb_dev
+      tmproceeding_catalog: trm_tmproceeding_dev
+      tmreviews_catalog: trm_tmreviews_dev
+      tmworker_catalog: trm_tmworker_dev
+      Component: TMDC
+      ComponentID: COMP-1627
+      instance_profile_arn: "arn:aws:iam::640272543913:instance-profile/uspto-dev/uacs-lab-instance-role-1"
+      git_branch: lab
+      editor: CAN_MANAGE
+      editorteam: grp-eds-bdr-trademark-dbx-developers
+      reader: CAN_VIEW
+      readerteam: grp-eds-bdr-testing-team
+      id: "ab244a0c-fdf4-4445-ad23-46f937beec58"
+      keepOn_value: "Mo+Tu+We+Th+Fr+Sa+Su:06-18/Federal_Holiday_ON"
+      policy_id: 00192D7A37423518
+      runtime: 16.4.x-scala2.12
+      pause_status: PAUSED
+      trm_tmprodvty_catalog: "trm_tmprodvty_dev"
+      cdc_bucket: "databricks-lab-tmdc"
+    permissions:
+      - level: CAN_MANAGE
+        user_name: Chiranjeevi.Gajula@uspto.gov
+      - level: CAN_MANAGE
+        user_name: Ravi.Koppula1@USPTO.GOV
+      - level: CAN_MANAGE
+        service_principal_name: c0e8744c-4859-4397-b822-2f629cf629dc
+  prod:
+    mode: production
+    default: false
+    workspace:
+      host: "https://lake-tmdc-p.uspto.gov/"
+      root_path: "/Workspace/Users/c0e8744c-4859-4397-b822-2f629cf629dc/.bundle/${bundle.name}/${bundle.target}"
+    variables:
+      environment: prod
+      Component: TMDC
+      ComponentID: COMP-1627
+      instance_profile_arn: "arn:aws:iam::232576824973:instance-profile/uspto-dev/uacs-prod-instance-role-1"
+      git_branch: master
+      editor: CAN_VIEW
+      editorteam: grp-eds-bdr-testing-team
+      reader: CAN_VIEW
+      readerteam: grp-eds-bdr-trademark-dbx-developers
+      id: "e5229241-17a2-4935-8626-0e0db3b81fc7"
+      keepOn_value: "Mo+Tu+We+Th+Fr+Sa+Su:00-23/Federal_Holiday_ON"
+      policy_id: 000F34A0CA9D0CB8
+      runtime: 16.4.x-scala2.12
+      pause_status: UNPAUSED
+      trm_tmprodvty_catalog: "trm_tmprodvty"
+      tmngpdb_catalog: trm_tmngpdb
+      tmproceeding_catalog: trm_tmproceeding
+      tmreviews_catalog: trm_tmreviews
+      tmworker_catalog: trm_tmworker
+      cdc_bucket: "databricks-prod-tmdc"
