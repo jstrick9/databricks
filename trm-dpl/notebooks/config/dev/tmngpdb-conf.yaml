@@ -8,6 +8,7 @@ schema:
     working_temp_directory: "dbfs:/mnt/databricks-lab-tmdc/TRTDXFAP"
     s3_action_key_business_event_table_path: "s3://databricks-lab-tmdc/trademark_application/action_key_business_event_table/Table_BDX_Action_Key_TM_Business_Event.xlsx"
     foreign_oracle_catalog: "foreign_trm_dev"
+    reporting_catalog: 'trm_reporting_dev'
 cdc:
     src_database: 'tmngpvtdb'
     cdc_bucket: 'databricks-lab-tmdc'
