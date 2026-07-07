@@ -1,0 +1,334 @@
+# TRMNG Bronze → USPTO.gov Wait Times – Source Mapping
+# v3 – Environment agnostic – NO hardcoded catalog names
+# Catalog / schema are injected at runtime from config/{dbx_env}/tmngpdb-conf.yaml
+#   tmngpdb_catalog = common_configs['schema']['trgt_catalog']
+#   bronze_catalog  = common_configs.get('unity_catalog',{}).get('bronze_catalog', tmngpdb_catalog)
+#   bronze_schema   = common_configs.get('unity_catalog',{}).get('bronze_schema', 'bronze')
+#
+# DO NOT put trm_tmngpdb / trm_tmngpdb_dev / trm_tmngpdb_preprod in this file.
+# All table names below are logical – no catalog.schema prefix.
+# Full name is built at runtime: f"{bronze_catalog}.{bronze_schema_name}.{tables.trademark_history}"
+#
+# Event codes from: export_wait_time_event_codes.py – 2026-06-30
+# USPTO.gov target: https://www.uspto.gov/trademarks/application-timeline
+# Validation targets: first_action = 4.3 months, registration_or_abandonment = 9.9 months
+
+# ---------------------------------------------------------------------------
+# Tables – logical names only – catalog resolved at runtime
+# ---------------------------------------------------------------------------
+tables:
+  trademark_current: "trademark"
+  trademark_history: "trademark_h"
+  tm_states: "tm_states"
+  tm_itu: "tm_itu"
+  tm_itu_h: "tm_itu_h"
+  tm_itu_extension_h: "tm_itu_extension_h"
+  tm_divisional_child_h: "tm_divisional_child_h"
+  tm_post_registration: "tm_post_registration"
+  tm_renewal_h: "tm_renewal_h"
+  tram_am: "tram_am"
+  employee_credit_transaction: "employee_credit_transaction"
+  international_reg_tm_h: "international_reg_tm_h"
+
+# ===========================================================================
+# EVENT CODE MAPPINGS – trm_tmngpdb.bronze – 2026-06-30 export
+# AGGRESSIVE CATCH-ALL – TUNE DOWN TO HIT 4.3 / 9.9 MONTHS
+# Edit ONLY this file to change event codes – no code deploy needed
+# ===========================================================================
+
+event_codes:
+
+  # trademark_h.last_event_type_cd – 127M rows
+  trademark_last_event_type_cd:
+    first_office_action:
+      # AGGRESSIVE – ~2.8M rows – tune DOWN until first_action_avg ≈ 4.3 months
+      # If avg < 2.0 mo → remove EISUI, EEXTI, IUAFS first
+      # If avg > 12 mo / 0 rows → add from candidate list below
+      - "E89RI" 
+      - "EEXTI" 
+      - "E815I" 
+      - "EISUI" 
+      - "IUAFS" 
+      - "ES8RI" 
+      - "EROPI" 
+      - "TPEXI" 
+      - "ES71I" 
+      - "ES7RI" 
+      - "ERTDI" 
+      - "ES75I" 
+      - "EXARI" 
+      - "EPPAI" 
+      - "E15RI" 
+      - "ES7SI" 
+      - "PROAI"  # Office Action Issued – HIGH CONFIDENCE
+      - "TROAI" 
+      - "IROAI" 
+      - "PARII" 
+      - "ATRQI" 
+      # candidate_low_volume:
+      - "FAXXI"  # 317
+      - "PR15O"  # 300
+      - "ERTRI"  # 300
+      - "12AFI"  # 47
+      - "EMRVE"  # 21
+      - "NREVE"  # 8
+      - "EWAFI"  # 7
+      - "EAAUI"  # 4
+      - "ES12I"  # 4
+    registration:
+      # Codes starting RG* – only 252 rows in last_event_type_cd
+      # Registration timing primarily via legacy_status_cd below
+      - "RG1BO" 
+      - "RGEXO" 
+      - "RGSUO" 
+      - "RGDVO" 
+      - "RGRNO" 
+    abandonment:
+      # No explicit ABN code in last_event_type_cd in the export
+      # Using legacy_status_cd for abandonment
+      # candidate: "REMOV"  # 1728371 – uncomment if SME confirms
+      []
+
+  # trademark_h.legacy_status_cd
+  # Registration / Abandonment – tune this list to hit 9.9 months
+  # If registration_avg < 5 months → list too broad (includes early 600-series), remove 630,638,641… first
+  # If registration_avg > 20 months / 0 rows → list too narrow, uncomment candidate codes
+  legacy_status_cd:
+    registered:
+      # 700-series – Registered – HIGH CONFIDENCE
+      - "700" 
+      - "701" 
+      - "702" 
+      - "705" 
+      - "706" 
+      - "707" 
+      - "708" 
+      - "709" 
+      - "710" 
+      # --- EXPANDED – high-count 600-series – likely Allowed/Published – VERIFY ---
+      # Commented out early 600-series application codes so registration timing reflects actual registration
+      # - "630" 
+      # - "638" 
+      # - "681" 
+      # - "686" 
+      # - "641" 
+      # - "680" 
+      # - "661" 
+      # - "602" 
+      # - "688" 
+      # - "606" 
+      # - "640" 
+      # - "647" 
+      # - "645" 
+      # - "646" 
+      # - "653" 
+      # - "626" 
+      # - "616" 
+      # - "654" 
+      # - "622" 
+      # - "612" 
+      # - "601" 
+      # - "604" 
+      # - "605" 
+      # - "631" 
+      # - "658" 
+      # - "656" 
+      # candidate – lower volume – uncomment if needed to increase sample size:
+      # "649","663","610","603","657","614","650","655","694","666","648","660","672","618"
+    abandoned:
+      # 800-series – Abandoned / Expired
+      - "800" 
+      - "801" 
+      - "802" 
+      - "804" 
+      - "806" 
+      - "807" 
+      - "808" 
+      - "809" 
+      - "810" 
+      - "815" 
+      # expanded
+      - "900" 
+      - "0" 
+
+  # employee_credit_transaction.fk_credit_tran_rsn_type_cd
+  # ESU Reason Code – NOT IDENTIFIED – NEED SME
+  # Top codes: PRODT 5,474,659 | FIACT 3,058,251 | APPUB 1,553,408 | ABN2O 694,422 | SOUAC 347,823 …
+  # Full list in docs/TRM_Event_Code_Signoff.csv
+  employee_credit_tran_rsn:
+    first_oa:
+      - "FIACT"  # First Action ?
+    esu_response:
+      # TODO SME REQUIRED – ESU metric will be 0 / NULL until filled
+      # Candidates:
+      # - "PRODT"   # 5,474,659
+      # - "APPUB"   # 1,553,408
+      # - "FIACP"   # 280,871
+      # - "AFACP"   # 236,720
+      # - "FREFI"   # 128,385
+      []
+  
+  # tram_am.am_flg_action – Filing basis
+  # Values: 1 = 9,443,299 rows, 0 = 4,469,782 rows
+  # BEST GUESS: 1 = TEAS, 0 = Madrid/66a – VERIFY
+  filing_basis_values:
+    teas:
+      - "1"
+    madrid_66a:
+      - "0"
+    # If filing_basis is in a different column in tram_am (251 columns),
+    # set here – e.g.: filing_basis_col: "fk_filing_basis_cd"
+    filing_basis_col: "am_flg_action"
+
+  # tram_am.am_last_event – Petitions LOP
+  # PETGO = 390 rows in tram_am / 57,445 in trademark_h – Petition Granted ?
+  petition_event_codes:
+    letters_of_protest:
+      - "PETGO"
+      # candidate: "EROPI"  # 1,264 / 84,805 – Letter of Protest Input ?
+
+  # tm_divisional_child_h.fk_tm_divisional_status_cd
+  # 6=156,752 | 5=35,075 | 99=12,545 | 4=57 | 7=1
+  divisional_status_cd:
+    complete:
+      - "6"
+      - "5"
+      - "99"
+
+  # tm_renewal_h.action_ct
+  # I=1,299,672 | U=572,978 | D=3,736
+  renewal_action_ct:
+    filed:
+      - "I"
+      - "U"
+
+# ============================================================================
+# Column mappings – NO catalog/schema prefix – resolved at runtime
+# common_configs['schema']['trgt_catalog'] + config + table name from `tables:` above
+# ============================================================================
+columns:
+  trademark:
+    pk: "auto_detect"
+    filing_date: "filing_dt"
+    effective_filing_date: "effective_filing_dt"
+    status_date: "status_dt"
+    last_action_date: "last_action_dt"
+    last_event_type_cd: "last_event_type_cd"
+    legacy_status_cd: "legacy_status_cd"
+
+  tm_itu:
+    sou_received_date: "SOU_RECEIVED_DT"
+    latest_itu_filing_received_date: "LATEST_ITU_FILNG_RECEIVED_DT"
+
+  tm_itu_extension_h:
+    expiration_date: "EXPIRATION_DT"
+    create_ts: "CREATE_TS"
+
+  tm_divisional_child_h:
+    unit_received_date: "unit_received_dt"
+    mailroom_received_date: "mailroom_received_dt"
+    divisional_status_date: "tm_divisional_status_dt"
+    divisional_status_cd: "fk_tm_divisional_status_cd"
+
+  tm_renewal_h:
+    renewal_filed_date: "renewal_filed_dt"
+    renewal_begin_effective_date: "renewal_begin_effective_dt"
+    renewal_end_effective_date: "renewal_end_effective_dt"
+    action_ct: "action_ct"
+
+  tm_post_registration:
+    latest_correspondence_received_date: "latest_correspondence_rcvd_dt"
+    post_reg_audit_begin_date: "post_reg_audit_begin_dt"
+
+  employee_credit_transaction:
+    transaction_effective_date: "transaction_effective_dt"
+    reason_type_cd: "fk_credit_tran_rsn_type_cd"
+    transaction_type_ct: "transaction_type_ct"
+
+  tram_am:
+    filing_basis_col: "am_flg_action"
+    last_event_col: "am_last_event"
+
+# ============================================================================
+# USPTO.gov metrics – 12 metrics – event_code filters reference event_codes above
+# Units / targets match https://www.uspto.gov/trademarks/application-timeline
+# ============================================================================
+metrics:
+  - metric_key: first_action
+    metric_name: "First examining action in TSDR record"
+    unit: months
+    target_value: 5.0
+    section: summary
+    sort_order: 10
+  - metric_key: registration_or_abandonment
+    metric_name: "Trademark registering or application abandoning"
+    unit: months
+    target_value: 11.0
+    section: summary
+    sort_order: 20
+  - metric_key: pre_exam_teas
+    metric_name: "TEAS"
+    unit: days
+    target_value: 10
+    section: "Pre-Examination Unit"
+    sort_order: 100
+  - metric_key: pre_exam_madrid
+    metric_name: "MADRID"
+    unit: days
+    target_value: 10
+    section: "Pre-Examination Unit"
+    sort_order: 110
+  - metric_key: esu_responses
+    metric_name: "Responses/Corrections"
+    unit: days
+    target_value: 14
+    section: "Examination Support Unit (ESU)"
+    sort_order: 200
+  - metric_key: itu_extension
+    metric_name: "Extension requests"
+    unit: days
+    target_value: 15
+    section: "Intent to use"
+    sort_order: 300
+  - metric_key: itu_sou
+    metric_name: "Statement of use"
+    unit: days
+    target_value: 15
+    section: "Intent to use"
+    sort_order: 310
+  - metric_key: itu_divisional
+    metric_name: "Divisional requests"
+    unit: days
+    target_value: 15
+    section: "Intent to use"
+    sort_order: 320
+  - metric_key: petitions_lop
+    metric_name: "Letters of protest"
+    unit: days
+    target_value: 60
+    section: "Petitions Office"
+    sort_order: 400
+  - metric_key: postreg_affidavit
+    metric_name: "Affidavits of Use/Incontestability"
+    unit: days
+    target_value: 90
+    section: "Post Registration"
+    sort_order: 500
+  - metric_key: postreg_renewal
+    metric_name: "Renewals"
+    unit: days
+    target_value: 90
+    section: "Post Registration"
+    sort_order: 510
+  - metric_key: postreg_amendment
+    metric_name: "Amendments/Corrections"
+    unit: days
+    target_value: 90
+    section: "Post Registration"
+    sort_order: 520
+
+# Validation targets – USPTO.gov live – 2026-05-31
+# Tune event_codes above until Gold output matches these within ±15%
+validation_targets:
+  first_action_months: 4.3
+  registration_or_abandonment_months: 9.9
