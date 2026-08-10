@@ -1,6 +1,0 @@
-# /data_quality/hash_configs/trm_reporting/silver/correspondence_hash_config.yml — LEGAL NOTICE DELIVERY
-natural_key_columns:
-  - ser_num                          # One primary correspondent per application
-
-use_all_columns_for_data_hash: true
-# Rationale: Address, email, or name changes affect deliverability — must trigger new version

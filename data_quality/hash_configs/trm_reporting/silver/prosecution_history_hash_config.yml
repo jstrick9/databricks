@@ -1,8 +1,0 @@
-# /data_quality/hash_configs/trm_reporting/silver/prosecution_history_hash_config.yml — LEGAL TIMELINE
-natural_key_columns:
-  - serial_number
-  - ph_action_number                 # Sequential event number — no gaps allowed
-
-use_all_columns_for_data_hash: true
-# Rationale: ph_action_code, cm_sys_dt, ri_notif_dt — any change rewrites history
-# Must be perfectly tracked

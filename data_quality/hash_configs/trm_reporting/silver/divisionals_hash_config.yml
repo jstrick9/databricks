@@ -1,6 +1,0 @@
-# /data_quality/hash_configs/trm_reporting/silver/divisional_hash_config.yml — EXAMINER PRODUCTIVITY TRUTH
-natural_key_columns:
-  - ser_num                          # One primary correspondent per application
-
-use_all_columns_for_data_hash: true
-# Rationale: ref_ser_num, filing_dt, ib_notification_dt — any change = new legal reality

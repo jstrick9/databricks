@@ -1,7 +1,0 @@
-# /data_quality/allowed_values/filing_methods.yml
-TEAS: TEAS                  # Trademark Electronic Application System
-"TEAS PLUS": "TEAS Plus"    # Lower fee, stricter requirements
-"TEAS STANDARD": TEAS       # Standard electronic filing
-PAPER: PAPER                # Paper filing (legacy)
-MADRID: MADRID              # Madrid Protocol international filing
-EFS: EFS                    # Electronic Filing System (legacy)
