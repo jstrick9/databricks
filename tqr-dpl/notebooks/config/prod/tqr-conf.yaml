@@ -1,0 +1,23 @@
+schema:
+    tqr_catalog: 'tqr'
+    trm_catalog: 'trm_tmngpdb'
+    trm_worker_catalog: 'trm_tmworker'
+    trm_tmprodvty_catalog: 'trm_tmprodvty'
+    data_quality_catalog: 'data_quality' 
+    tqr_src_db: 'tmngpdb' 
+    mysql_tqr_db: 'tqr'
+    dataload_dt: '2017-01-01 00:00:00'
+secrets:
+    mysql_scope: 'mysql_bdr_server'
+    oracle_trm_scope: 'oracle_trm_server'    
+lawcode:
+    lawcode_host: 'https://infra-services.uspto.gov/infra-services/workerDetails'
+elastic:
+    json_path: "s3a://bdr-databricks-app-prod/eds/elastic/tqr"
+data_quality:
+    receiver_email: 'ODBDDataLakeTeam@uspto.gov'
+    brnz_allowed_variance: '10.0'
+    gold_allowed_variance: '0.0'
+    dataverify_dt: "'2023-09-01 00:00:00'"  
+cdc:
+    cdc_bucket: 'databricks-prod-tmdc' 

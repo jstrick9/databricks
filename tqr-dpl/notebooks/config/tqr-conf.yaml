@@ -1,0 +1,21 @@
+schema:
+    tqr_catalog: 'tqr_test'
+    data_quality_catalog: 'data_quality_test' 
+    src_db_name: 'trmpvtdb' 
+    mysql_tqr_db: 'tqr'
+    dataload_dt: '2017-01-01 00:00:00'
+cdc:
+    src_csv_files: 's3a://bdr-databricks-app-dev/eds/DMS/TMNGPVTDB'
+    src_database: 'tmngpvtdb'
+    cdc_bucket: 'bdr-databricks-app-dev'
+    cdc_folder: 'eds/DMS/cdc/tqr'
+    transformed_cdc_folder: 'eds/DMS/cdc/tqr/transformed_cdc'
+    finished_cdc_folder: 'eds/DMS/cdc/tqr/finished_cdc'
+secrets:
+    mysql_scope: 'mysql_bdr_server'
+    trm_jbteasps_scope: 'oracle_jbteasps_server'
+    trm_tmngpdb_scope: 'oracle_trmpvt_server'    
+lawcode:
+    lawcode_host: 'https://infra-services.uspto.gov/infra-services/workerDetails'
+cdc:
+    cdc_bucket: 'databricks-prod-tmdc'
