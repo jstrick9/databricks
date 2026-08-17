@@ -1,0 +1,12 @@
+command:
+  - streamlit
+  - run
+  - Home.py
+
+# ENVIRONMENT and WAREHOUSE set via bundle resources/wait_times.yml
+# These defaults are for local `streamlit run` only – bundle overrides via ${var.environment}
+env:
+  - name: DATABRICKS_WAREHOUSE_NAME
+    value: "Trademark"
+  - name: ENVIRONMENT
+    value: "dev"

@@ -1,0 +1,9 @@
+resources:
+  apps:
+    app-wait-times:
+      name: app-wait-times-${bundle.target}
+      description: "USPTO Trademark Processing Wait Times - Self-service Tool"
+      source_code_path: ../apps/app-wait-times
+      permissions:
+        - level: ${var.app_reader}
+          group_name: ${var.app_wait_times_user}

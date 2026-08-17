@@ -1,0 +1,60 @@
+schema:
+  trgt_catalog: 'trm_tmngpdb_dev'
+  reporting_catalog: 'trm_reporting_dev'
+  proceeding_catalog: 'trm_tmproceeding_dev'
+  data_quality_catalog: 'data_quality_dev'
+  silver_schema: 'silver'
+  gold_schema: 'gold'
+  bronze_schema: 'bronze'
+
+cdc:
+  cdc_bucket: 'databricks-lab-tmdc'
+
+publish:
+  s3_bucket: 's3://databricks-lab-tmdc/eds/trademark/processing_wait_times'
+  volume_path: '/Volumes/trm_tmngpdb_dev/gold/wait_times'
+  api_gateway_url: 'https://api.uspto.gov/trademarks/v1/wait-times'
+  # For dev, secrets may not be configured – app will show what would be posted
+  secret_scope: 'uspto-api'
+
+# Job that builds gold – used for hybrid full-run trigger
+jobs:
+  wait_times_job_name: 'wf_trademark_processing_wait_times'
+
+# Default targets – can be edited via UI and stored in gold.metric_targets
+default_targets:
+  first_action: 5.0
+  registration_or_abandonment: 11.0
+  pre_exam_teas: 10
+  pre_exam_madrid: 10
+  esu_responses: 14
+  itu_extension: 15
+  itu_sou: 15
+  itu_divisional: 15
+  petitions_lop: 60
+  postreg_affidavit: 90
+  postreg_renewal: 90
+  postreg_amendment: 90
+
+# Live USPTO validation – May 31 2026 snapshot from https://www.uspto.gov/trademarks/application-timeline
+live_uspto_snapshot:
+  date: '2026-05-31'
+  first_action_months: 4.3
+  registration_months: 9.9
+  # Pre-exam live
+  pre_exam_teas: 99
+  pre_exam_madrid: 10
+  esu_responses: 1
+  itu_extension: 116
+  itu_sou: 64
+  itu_divisional: 160
+  petitions_lop: 55
+  postreg_affidavit: 49
+  postreg_renewal: 50
+  postreg_amendment: 73
+
+# ETL freshness expectations
+etl:
+  data_freshness_hours: 48
+  silver_table: 'case_milestones'
+  gold_table: 'processing_wait_times'

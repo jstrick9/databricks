@@ -3,11 +3,12 @@ bundle:
 
 include:
   - jobs/*/*.yml
-  #- resources/*.yml
+  - resources/*.yml
 
 sync:
   include:
     - "notebooks/**"
+    - "apps/**"
 
 variables:
   environment:
@@ -69,7 +70,13 @@ variables:
   tmworker_catalog:
     description: "tmworker catalog"
     default: trm_tmworker_dev
-    
+  app_reader:
+    description: "App reader permission level"
+    default: CAN_USE
+  app_wait_times_user:
+    description: "Wait Times App user group"
+    default: grp-wait-times-app
+
 targets:
   lab:
     mode: development
@@ -98,6 +105,9 @@ targets:
       pause_status: PAUSED
       trm_tmprodvty_catalog: "trm_tmprodvty_dev"
       cdc_bucket: "databricks-lab-tmdc"
+      # For apps
+      app_reader: CAN_USE
+      app_wait_times_user: grp-wait-times-app
     permissions:
       - level: CAN_MANAGE
         user_name: Chiranjeevi.Gajula@uspto.gov
@@ -132,3 +142,6 @@ targets:
       tmreviews_catalog: trm_tmreviews
       tmworker_catalog: trm_tmworker
       cdc_bucket: "databricks-prod-tmdc"
+      # For apps
+      app_reader: CAN_USE
+      app_wait_times_user: grp-wait-times-app
