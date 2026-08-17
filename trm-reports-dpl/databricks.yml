@@ -3,7 +3,7 @@ bundle:
 
 include:
   - jobs/*/*.yml
-  #- resources/*.yml
+  - resources/*.yml
 
 variables:
   environment:
@@ -54,6 +54,15 @@ variables:
   reporting_catalog:
     description: "Catalog"
     default: trm_reporting_dev
+  app_editor:
+    description: "App editor permission level"
+    default: CAN_MANAGE
+  app_reader:
+    description: "App reader permission level"
+    default: CAN_USE
+  app_reader_user:
+    description: "App user group"
+    default: grp-trm-reports-app
     
 targets:
   lab:
@@ -79,6 +88,10 @@ targets:
       keepOn_value: "Mo+Tu+We+Th+Fr+Sa+Su:06-18/Federal_Holiday_ON"
       policy_id: 0019B9D71C8D94C9
       runtime: 16.4.x-scala2.12
+      # For apps
+      app_editor: CAN_MANAGE
+      app_reader: CAN_USE
+      app_reader_user: grp-trm-reports-app
     permissions:
       - level: CAN_MANAGE
         user_name: Chiranjeevi.Gajula@uspto.gov
@@ -107,3 +120,7 @@ targets:
       keepOn_value: "Mo+Tu+We+Th+Fr+Sa+Su:00-23/Federal_Holiday_ON"
       policy_id: 0019EA8E5EC283D1
       runtime: 16.4.x-scala2.12
+      # For apps
+      app_editor: CAN_USE
+      app_reader: CAN_USE
+      app_reader_user: grp-trm-reports-app

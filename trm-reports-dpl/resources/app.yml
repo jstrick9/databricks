@@ -1,0 +1,9 @@
+resources:
+  apps:
+    app-ph-action-code:
+      name: app-ph-action-code-${bundle.target}
+      description: TRM Reports - Prosecution History Action Code Search Application for ${bundle.target}
+      source_code_path: ../apps/app-ph-action-code
+      permissions:
+        - level: ${var.app_reader}   # CAN_USE
+          group_name: ${var.app_reader_user}
