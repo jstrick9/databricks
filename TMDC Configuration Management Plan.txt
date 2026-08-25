@@ -1,0 +1,176 @@
+United States
+Patent and Trademark Office
+
+
+
+
+
+TM TM-DC
+ Configuration Management Plan
+Version: 1.0.0 07/16/2026Prepared by: USPTO
+
+DISTRIBUTION IS LIMITED TO U.S. GOVERNMENT AGENCIES AND THEIR CONTRACTORS.
+OTHER REQUESTS FOR THIS DOCUMENT MUST BE REFERRED TO: USPTO
+
+CONFIGURATION MANAGEMENT PLAN FOR TM-TMDC
+Approval and Record of Changes
+This Configuration Management Plan (CMP) is used in conjunction with the most current release of the USPTO Enterprise Configuration Management Standardized Procedures. This CMP is for system-related information which may be unique and outside the TEPT.
+
+By signing this form, the System Owner, ISSO, OCIO Product Owner, and Technical Lead are stating that they have read, understand, and will follow the USPTO Enterprise Configuration Management Policy (OCIO-POL-31). System Owner and Information System Security Officer signature reside in SSP.
+
+
+
+
+                                                                                                                         
+           
+       Vidya Mohan/Annie Nguyen
+USPTO Information System Technical Lead (TL)
+
+
+
+
+
+
+
+
+Donald Ulrich
+USPTO Information Systems Owner (SO)
+
+
+Template Version Number: 1.0 Template Version Date: 08/08/2022
+RECORD OF CONFIGURATION MANAGEMENT PLAN CHANGESREVISION NUMBERREVISION DATE  PAGES AFFECTED
+DESCRIPTION   CHANGE IMPLEMENTOR
+Table of Contents
+Approval and Record of Changes	2
+SIGNATURES	2
+RECORD OF CONFIGURATION MANAGEMENT PLAN CHANGES	3
+Table of Contents	4
+1.0 OVERVIEW	5
+Introduction	5
+Purpose of this CMP	5
+Scope	6
+2.0 Configuration Change Control	6
+Elements	6
+* Identification	6
+* Baseline	6
+* Version Control	6
+* Auditing	6
+Configuration Management Tools/Software	7
+3.0 Security Impact Analysis	7
+1. Understand the Change	7
+2. Identify Vulnerabilities	8
+3. Assess Risks	8
+4. Assess Impact on Existing Security Controls	8
+5. Plan Safeguards and Countermeasures	8
+4.0 Testing	9
+Type of Test	9
+5.0 Change Management	9
+APPENDIX A	References	11
+
+Figures
+Table 1 Artifacts Location	7
+Table 2 Testing Types	Error! Bookmark not defined.
+
+1.0 OVERVIEW
+TM-TMDC Configuration Management builds on the general concepts, processes, and activities of configuration management by putting attention on the implementation and maintenance defined in USPTO DevSecOps policy. TM-TMDC applies configuration management per DevSecOps policy for establishing baselines and for tracking, controlling, and managing many aspects of business development and operation (e.g., products, services, manufacturing, business processes, and information technology).
+Introduction
+This Configuration Management Plan (CMP) is a standard plan for Configuration Management (CM) activities for TM-TMDC. Configuration Management is an automated process that ensures the configuration of these environments is optimal. One of the fundamental goals of an effective CM is enabling the TM-TMDC team to completely recreate any given system or software application solely from the artifacts. This capability demonstrates the fidelity, availability, accuracy, and completeness of the component’s artifacts (i.e., configuration items (CI)) placed under the team’s control. This capability is an essential component of any disaster recovery effort since it provides an additional level of protection against lost or corrupted files.
+By definition, CM applies to the entire spectrum of change: initiation, analysis, approval, design, development, testing, implementation, status accounting, and administrative processing. It strongly embraces the elements of order, discipline, and control to prevent unauthorized
+changes, expediting the implementation of valid changes, and maintaining an exact match to the written documents that describe the software, and products being controlled.
+Purpose of this CMP
+The overall objective of a Configuration Management Plan (CMP) is to document and inform product and component stakeholders about CM, what CM tools will be used, and how they will be applied during the components lifecycles to promote success. This CMP defines the
+component’s structure and methods for:
+* Identifying, defining, and baselining items (CIs)
+* Controlling modifications and releases of CIs
+* Reporting and recording status of CIs and any requested modifications
+* Ensuring completeness, consistency, and correctness of CIs
+* Controlling storage, handling, and delivery of the CIs
+
+Scope
+This document describes the management structure, controls, and processes to be used for CM throughout the life cycle of the component and its supporting software, and documentation. This CMP was developed in conjunction with the System Configuration & Delivery Automation
+Division (SCDAD). The document outlines at a high level, the configuration management activities and responsibilities. The details contained within this CMP apply only to the
+component baselines and other resources listed within the scope section of this plan.
+2.0 Configuration Change Control
+A well-defined configuration change control process is fundamental to any program. Configuration change control is the process for ensuring that configuration changes to TM-TMDC are formally requested, evaluated for their security impact, tested for effectiveness, and approved before they are implemented. TM-TMDC utilizes USPTO DevSecOps policy process to control change.
+Elements
+The main elements of Configuration Management are the components that utilize the DevSecOps pipeline and tools associated with configuration management. These tools include: (example: pipeline, GitLab, etc.).
+* Identification
+Configuration data is aggregated and compiled from different application environments,
+development, staging, and production for all the components and services in use. Any secret data like passwords and keys are identified and securely encrypted and stored.
+* Baseline
+After configuration data has been aggregated and organized a baseline is established. A baseline configuration is a known state of configuration that will successfully operate the
+dependent software without error. This baseline is created by reviewing the configuration of a functioning production environment and committing those configuration settings.
+* Version Control
+Each component has a version control system by adding configuration data files to the repository.
+* Auditing
+Once configuration data is organized and added to a repository, it enables collaboration and visibility into the system’s configuration. The popular pull request workflow that the teams
+use to review and edit code will be applied to configuration data files. This helps build out an audit and accounting system. Any changes applied to the configuration will be reviewed and accepted by the team. This adds accountability and visibility into configuration changes.
+
+Configuration Management Tools/Software
+* Git
+* Docker
+* Terraform
+* Ansible
+* Nexus
+* GitLab Pipeline
+
+Location of
+Artifacts
+
+LocationGitLab URLhttps://prod-cicm.uspto.gov/gitlab/tm-tmdc/tdet-dplTDET-DPLhttps://prod-cicm.uspto.gov/gitlab/tm-tmdc/tept-dplTEPT-DPLhttps://prod-cicm.uspto.gov/gitlab/tm-tmdc/tmreports-webTMREPORTS-WEBhttps://prod-cicm.uspto.gov/gitlab/tm-tmdc/tqr-dplTQR-DPLhttps://prod-cicm.uspto.gov/gitlab/tm-tmdc/tqr-lom-dplTQR-LOM-DPLhttps://prod-cicm.uspto.gov/gitlab/tm-tmdc/trm-domain-dplTRM-DOMAIN-DPLhttps://prod-cicm.uspto.gov/gitlab/tm-tmdc/trm-dplTRM-DPLhttps://prod-cicm.uspto.gov/gitlab/tm-tmdc/trm-practitioner-dplTRM-PRACTITIONERhttps://prod-cicm.uspto.gov/gitlab/tm-tmdc/trm-reports-dplTRM-REPORTShttps://prod-cicm.uspto.gov/gitlab/tm-tmdc/pqr-dplPQR-DPLNexushttps://prod-cicm.uspto.gov/nexus3Table 1 Artifacts Location
+3.0 Security Impact Analysis
+Security impact analysis is the analysis conducted by qualified TM-TMDC staff to determine the extent to which changes to TM-TMDC affect the security posture. Because TM-TMDC is typically in a constant state of change, it is important to understand the impact of changes on the functionality of existing security controls and in the context of organizational risk tolerance. Security impact analysis is incorporated into the documented configuration change control process.
+
+The analysis of the security impact of a change occurs when changes are analyzed and evaluated for adverse impact on security, preferably before they are approved and implemented, but also in the case of emergency/unscheduled changes. Once the changes are implemented and tested, a security impact analysis (and/or assessment) is performed to ensure that the changes have been implemented as approved, and to determine if there are any unanticipated effects of the change on existing security controls.
+Security impact analysis supports the implementation of NIST SP 800-53 control CM-4 Security Impact Analysis.
+
+The process for a security impact analysis consists of the following steps:
+* Understand the Change - If the change is being proposed, develop a high-level architecture overview which shows how the change will be implemented. If the change has
+already occurred (unscheduled/unauthorized), request follow-up documentation/information and review it or use whatever information is available (e.g., audit records, interview staff who made the change, etc.) to gain insight into the change.
+
+* Identify Vulnerabilities - If the change involves a COTS hardware or software product, identifying vulnerabilities may include, for example, a search of the National Vulnerability Database (NVD) which enumerates vulnerabilities, user experience, etc. TM-TMDC can leverage this information to address known issues and remove or mitigate them before they become a concern. Other public databases of vulnerabilities, weaknesses, and threats may also be searched (e.g., US-CERT). Some automated vulnerability scanning tools (SCAP- validated tools where possible) are able to search various public vulnerability databases that apply to IT products/CPE names of IT products. If the change involves custom development, a more in-depth analysis of the security impact is conducted. Although application security is beyond the scope of this Plan, there are many best practices and useful sources of information for how to ensure the security of software code.
+
+* Assess Risks - Once a vulnerability has been identified, a risk assessment is needed to identify the likelihood of a threat exercising the vulnerability and the impact of such an event. Although vulnerabilities may be identified in changes as they are proposed, built, and tested, the assessed risk may be low enough that the risk can be accepted without remediation (i.e., risk acceptance). In other cases, the risk may be high enough that the change is not approved (i.e., risk avoidance), or that safeguards and countermeasures are implemented to reduce the risk (i.e., risk mitigation).
+
+* Assess Impact on Existing Security Controls - In addition to assessing the risk from the change, TM-TMDC will analyze whether and how a change will impact existing security controls. For example, the change may involve installation of software that alters the existing baseline configuration, or the change itself may cause or require changes to the existing baseline configuration. The change may also affect other systems or system components that depend on the function or component being changed, either temporarily or permanently. For example, if a database that is used to support auditing controls is being upgraded to the latest version, auditing functionality within the system may be halted while the upgrade is being implemented.
+* Plan Safeguards and Countermeasures - In cases where risks have been identified and are unacceptable, TM-TMDC will use the security impact analysis to revise the change or to plan safeguards and countermeasures to reduce the risk. For instance, if the security impact analysis reveals that the proposed change causes a modification to a common secure
+
+
+configuration setting, plans to rework the change to function within the existing setting are initiated. If a change involves new elevated privileges for users, plans to mitigate the additional risk are made (e.g., submission of requests for higher clearance levels for those users or implementation of stronger access controls).
+4.0 Testing
+TM-TMDC fully tests secure configurations prior to implementation in the production environment. There are a number of issues that may be encountered when implementing configurations including software compatibility and hardware device driver issues. For example, there may be legacy applications with special operating requirements that do not function correctly after a common secure configuration has been applied. Additionally, configuration errors could occur if OS and multiple application configurations are applied to the same component. For example, a setting for an application configuration parameter may conflict with a similar setting for an OS configuration parameter. A Change Request must be prepared to the audit trail of testing activity is maintained.
+
+Type of TestTest MethodologyNotePatch DeploymentSubset testingPatches will be tested on a
+subset of TM-TMDC assets prior
+to deployment to all assetsSecurity SettingsSubset testingSecurity setting changes will
+be tested on a subset of TM-TMDC assets prior to deployment to all assetsTable 2 Types of Tests
+5.0 Change Management
+USPTO DevSecOps Change Management Policy and Procedures: https://usptogov.sharepoint.com/sites/a142efd3/Pages/DevOps-Change-Management-Policy-and- Procedures.aspx
+
+TypesLocationPortsFor this system, ports information resides in the System Security Plan.ProtocolsFor this system, protocols information resides in the System Security Plan.
+
+Services (Operating System)For this system, services information resides in the System Security Plan.PatchesFor this system, patch information resides with the Infrastructure Services Division
+If cloud, the USPTO does not have admin rights to the cloud servers.Deployable Artifact StorageFor this system, all deployable artifacts will be stored in NexusTABLE 3.0 Ports, Protocols, Services, Patches, & Deployable Artifact Storage
+
+APPENDIX A	References
+The following table summarizes the documents referenced in this document.
+
+Title and
+version number:Guide for Security-Focused Configuration Management of Information SystemsLocation:https://csrc.nist.gov/publications/detail/sp/800-128/finalTitle and version number:Recommended Security Controls for Federal Information Systems and Organizations
+NIST Special Publication 800-53 Rev. 3Location:https://csrc.nist.gov/publications/detail/sp/800-53/rev-3/archive/2010-05-01Title and version number:Guide for Developing Security Plans for Federal Information Systems NIST Special Publication 800-18 Revision 1Location:https://csrc.nist.gov/publications/detail/sp/800-18/archive/1998-12-01Title and version number:Archiving and Destroying Configuration Management Artifacts Policy (OCIO-POL-5)Location:OCIO-POL-5_ArchivingDestroyingCMArtifacts.pdfTitle and version number:Enterprise Configuration Management Policy (OCIO-POL-31)Location:OCIO-POL-31_EnterpriseCM.pdf
+Title and version number:Configuration Management (CM) Security Controls
+(OCIO-POL-52)Location:OCIO-POL-52_TEPTecurityControls.pdf
+
+
+
+
+
+
+
+
+
+
+
+
+
+
